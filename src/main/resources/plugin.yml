@@ -1,0 +1,18 @@
+name: CVVanish
+version: ${project.version}
+main: org.cubeville.cvvanish.CVVanish
+authors: [RandomRob13]
+description: Vanishes players.
+
+commands:
+
+
+  v:
+    description: vanish command
+    permission: cvvanish.vanish
+
+
+permissions:
+  cvvanish.vanish:
+    description: Vanish permission
+    default: op
