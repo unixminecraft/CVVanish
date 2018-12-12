@@ -1,0 +1,13 @@
+- Test player collisions, implement cancelling mob collisions
+- Test what happens when a regular player quits while someone is vanished,
+  and the regular player logs back in after the vanished player unvanishes.
+- Silent chest opening, editable
+- Stop mobs from following you if you type /v while targeted
+- Redstone ore still "glows" when you step on it/click
+- Hide invis players from NPCs
+
+- Item pickup works as expected
+- Entity targeting works as expected
+- Silent chests are not editable, feature or bug?
+
+- Basically need to test all of the features with a 2nd account
