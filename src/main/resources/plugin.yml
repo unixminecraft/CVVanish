@@ -11,7 +11,14 @@ commands:
     description: vanish command
     permission: cvvanish.vanish
 
+  v silentchest:
+    description: toggle silent chests
+    permission: cvvanish.vanish
 
+  v pickup:
+    description: toggle item pickup
+    permission: cvvanish.vanish
+    
 permissions:
   cvvanish.vanish:
     description: Vanish permission

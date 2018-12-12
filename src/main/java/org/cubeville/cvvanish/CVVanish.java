@@ -10,7 +10,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityTargetEvent;
+import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.block.Chest;
 import org.bukkit.inventory.ItemStack;
@@ -25,11 +28,15 @@ public final class CVVanish extends JavaPlugin implements Listener {
     private VanishCommand vanishCommand;
 
     public static Set<UUID> invisible;
+    public static Set<UUID> silentChest;
+    public static Set<UUID> cantPickup;
 
     @Override
     public void onEnable() {
         vanishCommand = new VanishCommand(this);
         invisible = new HashSet<>();
+        silentChest = new HashSet<>();
+        cantPickup = new HashSet<>();
         Bukkit.getPluginManager().registerEvents(this, this);
     }
 
@@ -56,9 +63,10 @@ public final class CVVanish extends JavaPlugin implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        if(invisible.contains(player.getUniqueId())) {
+        UUID playerId = player.getUniqueId();
+        if(invisible.contains(playerId) && event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
             Material clickedBlock = event.getClickedBlock().getType();
-            if(clickedBlock.equals(Material.CHEST) || clickedBlock.equals(Material.TRAPPED_CHEST)) {
+            if ((clickedBlock.equals(Material.CHEST) || clickedBlock.equals(Material.TRAPPED_CHEST)) && silentChest.contains(playerId)) {
                 event.setCancelled(true);
 
                 Chest chest = (Chest) event.getClickedBlock().getState();
@@ -67,11 +75,37 @@ public final class CVVanish extends JavaPlugin implements Listener {
                 inventory.setContents(chest.getInventory().getContents());
                 player.openInventory(inventory);
             } else if(event.getAction().equals(Action.PHYSICAL)) {
-                if(clickedBlock == Material.WOOD_PLATE || clickedBlock == Material.GOLD_PLATE || clickedBlock == Material.IRON_PLATE || clickedBlock == Material.STONE_PLATE) {
+                //if(clickedBlock == Material.WOOD_PLATE || clickedBlock == Material.GOLD_PLATE || clickedBlock == Material.IRON_PLATE || clickedBlock == Material.STONE_PLATE) {
                     event.setCancelled(true);
                     event.setUseInteractedBlock(Event.Result.DENY);
-                }
+                //}
             }
         }
     }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onEntityTarget(EntityTargetEvent event) {
+        if(!(event.getTarget() instanceof Player)) return;
+        Player player = (Player) event.getTarget();
+        UUID playerId = player.getUniqueId();
+        if(invisible.contains(playerId)) {
+            event.setCancelled(true);
+        }
+    }
+
+    //Needs Testing
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) { //hide already invisible players from new joining players
+        Player player = event.getPlayer();
+        UUID playerId = player.getUniqueId();
+
+        for(Player p : getServer().getOnlinePlayers()) {
+            if(invisible.contains(p.getUniqueId())) {
+                player.hidePlayer(this, p); //player won't be able to see p
+            }
+        }
+    }
+
+    //TODO Test what happens when a regular player quits while someone is vanished,
+    // and the regular player logs back in after the vanished player unvanishes.
 }

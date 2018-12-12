@@ -6,7 +6,7 @@
 
     <groupId>org.cubeville</groupId>
     <artifactId>cvvanish</artifactId>
-    <version>1.0A</version>
+    <version>1.1A</version>
     <packaging>jar</packaging>
 
     <name>CVVanish</name>
