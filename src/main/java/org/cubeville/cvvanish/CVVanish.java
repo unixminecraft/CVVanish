@@ -64,7 +64,7 @@ public final class CVVanish extends JavaPlugin implements Listener {
     public void onInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         UUID playerId = player.getUniqueId();
-        if(invisible.contains(playerId) && event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+        if(invisible.contains(playerId) && (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getAction().equals(Action.PHYSICAL))) {
             Material clickedBlock = event.getClickedBlock().getType();
             if ((clickedBlock.equals(Material.CHEST) || clickedBlock.equals(Material.TRAPPED_CHEST)) && silentChest.contains(playerId)) {
                 event.setCancelled(true);
@@ -74,7 +74,7 @@ public final class CVVanish extends JavaPlugin implements Listener {
 
                 inventory.setContents(chest.getInventory().getContents());
                 player.openInventory(inventory);
-            } else if(event.getAction().equals(Action.PHYSICAL)) {
+            } else if(event.getAction().equals(Action.PHYSICAL)) { //why does redstone ore still glow?
                 //if(clickedBlock == Material.WOOD_PLATE || clickedBlock == Material.GOLD_PLATE || clickedBlock == Material.IRON_PLATE || clickedBlock == Material.STONE_PLATE) {
                     event.setCancelled(true);
                     event.setUseInteractedBlock(Event.Result.DENY);
