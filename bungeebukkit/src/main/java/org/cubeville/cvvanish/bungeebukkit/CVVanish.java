@@ -15,8 +15,8 @@ import org.cubeville.cvvanish.bungeebukkit.listener.VanishIPCReader;
 public class CVVanish extends JavaPlugin {
     
     private CVIPC ipcPlugin;
-    private HashSet<UUID> hiddenPlayers;
-    private HashSet<UUID> pickupPlayers;
+    private HashSet<UUID> hiddenPlayerIds;
+    private HashSet<UUID> pickupPlayerIds;
     
     @Override
     public void onEnable() {
@@ -25,24 +25,24 @@ public class CVVanish extends JavaPlugin {
         
         pluginManager.registerEvents(new EventListener(this), this);
         ipcPlugin = (CVIPC) pluginManager.getPlugin("CVIPC");
-        VanishIPCReader vanishIPCInterface = new VanishIPCReader(this);
+        VanishIPCReader vanishIPCReader = new VanishIPCReader(this);
         
-        ipcPlugin.registerIPCReader("initializeHidePlayer", vanishIPCInterface);
-        ipcPlugin.registerIPCReader("initializePlayerPickup", vanishIPCInterface);
+        ipcPlugin.registerIPCReader("initializeHidePlayer", vanishIPCReader);
+        ipcPlugin.registerIPCReader("initializePlayerPickup", vanishIPCReader);
         
-        ipcPlugin.registerIPCReader("hidePlayer", vanishIPCInterface);
-        ipcPlugin.registerIPCReader("enablePlayerPickup", vanishIPCInterface);
+        ipcPlugin.registerIPCReader("hidePlayer", vanishIPCReader);
+        ipcPlugin.registerIPCReader("enablePlayerPickup", vanishIPCReader);
         
-        ipcPlugin.registerIPCReader("showPlayer", vanishIPCInterface);
-        ipcPlugin.registerIPCReader("disablePlayerPickup", vanishIPCInterface);
+        ipcPlugin.registerIPCReader("showPlayer", vanishIPCReader);
+        ipcPlugin.registerIPCReader("disablePlayerPickup", vanishIPCReader);
         
         IPCMessage ipcMessage = new IPCMessage("vanishInitializer");
         ipcMessage.addMessage("readyForVanishInitialization");
         
         ipcPlugin.sendIPCMessage(ipcMessage);
         
-        hiddenPlayers = new HashSet<UUID>();
-        pickupPlayers = new HashSet<UUID>();
+        hiddenPlayerIds = new HashSet<UUID>();
+        pickupPlayerIds = new HashSet<UUID>();
     }
     
     @Override
@@ -59,7 +59,7 @@ public class CVVanish extends JavaPlugin {
     }
     
     public boolean isPlayerHidden(UUID playerIdToCheck) {
-        return hiddenPlayers.contains(playerIdToCheck);
+        return hiddenPlayerIds.contains(playerIdToCheck);
     }
     
     public boolean hidePlayer(UUID playerIdToHide) {
@@ -77,7 +77,7 @@ public class CVVanish extends JavaPlugin {
             return false;
         }
         
-        hiddenPlayers.add(playerIdToHide);
+        hiddenPlayerIds.add(playerIdToHide);
         
         for(Player otherOnlinePlayer : (Collection<? extends Player>) getServer().getOnlinePlayers()) {
             
@@ -108,7 +108,7 @@ public class CVVanish extends JavaPlugin {
             return false;
         }
         
-        hiddenPlayers.remove(playerIdToShow);
+        hiddenPlayerIds.remove(playerIdToShow);
         
         for(Player otherOnlinePlayer : (Collection<? extends Player>) getServer().getOnlinePlayers()) {
             
@@ -122,7 +122,7 @@ public class CVVanish extends JavaPlugin {
     }
     
     public boolean isPlayerPickupEnabled(UUID playerIdToCheck) {
-        return pickupPlayers.contains(playerIdToCheck);
+        return pickupPlayerIds.contains(playerIdToCheck);
     }
     
     public boolean enablePlayerPickup(UUID playerIdToEnable) {
@@ -130,7 +130,7 @@ public class CVVanish extends JavaPlugin {
         if(playerIdToEnable == null) {
             return false;
         }
-        return pickupPlayers.add(playerIdToEnable);
+        return pickupPlayerIds.add(playerIdToEnable);
     }
     
     public boolean disablePlayerPickup(UUID playerIdToDisable) {
@@ -138,6 +138,6 @@ public class CVVanish extends JavaPlugin {
         if(playerIdToDisable == null) {
             return false;
         }
-        return pickupPlayers.remove(playerIdToDisable);
+        return pickupPlayerIds.remove(playerIdToDisable);
     }
 }
