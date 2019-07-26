@@ -1,5 +1,5 @@
 name: CVVanish
-main: org.cubeville.bukkit.vanish.CVVanish
+main: org.cubeville.cvvanish.bungeebukkit.CVVanish
 author: unixadmin
 version: 0.1
 
