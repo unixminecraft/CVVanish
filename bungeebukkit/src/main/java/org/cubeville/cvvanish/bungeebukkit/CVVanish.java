@@ -2,7 +2,6 @@ package org.cubeville.cvvanish.bungeebukkit;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.entity.Player;
@@ -16,8 +15,8 @@ import org.cubeville.cvvanish.bungeebukkit.listener.VanishIPCReader;
 public class CVVanish extends JavaPlugin {
     
     private CVIPC ipcPlugin;
-    private Set<UUID> hiddenPlayers;
-    private Set<UUID> pickupPlayers;
+    private HashSet<UUID> hiddenPlayers;
+    private HashSet<UUID> pickupPlayers;
     
     @Override
     public void onEnable() {
