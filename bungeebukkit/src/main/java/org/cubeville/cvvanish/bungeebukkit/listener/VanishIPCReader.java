@@ -28,7 +28,7 @@ public class VanishIPCReader implements IPCReader {
         if(channel.equals("initializeHidePlayer")) {
             
             for(String hiddenPlayerIdValue : messages) {
-                if(!vanishPlugin.hidePlayer(UUID.fromString(hiddenPlayerIdValue))) {
+                if(!vanishPlugin.vanishPlayer(UUID.fromString(hiddenPlayerIdValue))) {
                     //TODO: Log error.
                 }
             }
@@ -43,7 +43,7 @@ public class VanishIPCReader implements IPCReader {
         }
         else if(channel.equals("hidePlayer")) {
             
-            if(!vanishPlugin.hidePlayer(UUID.fromString(messages.get(0)))) {
+            if(!vanishPlugin.vanishPlayer(UUID.fromString(messages.get(0)))) {
                 //TODO: Log error.
             }
         }
@@ -55,7 +55,7 @@ public class VanishIPCReader implements IPCReader {
         }
         else if(channel.equals("showPlayer")) {
             
-            if(!vanishPlugin.showPlayer(UUID.fromString(messages.get(0)))) {
+            if(!vanishPlugin.unvanishPlayer(UUID.fromString(messages.get(0)))) {
                 //TODO: Log error.
             }
         }
