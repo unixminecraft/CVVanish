@@ -39,10 +39,8 @@ public class HideCommand extends PlayerCommand {
         if(vanishPlugin.isPlayerHidden(commandSenderPlayerId)) {
             
             TextComponent youCantHideMore = new TextComponent();
-            
             youCantHideMore.setText("You can't be any more hidden than you already are.");
             youCantHideMore.setColor(ChatColor.RED);
-            
             commandSenderPlayer.sendMessage(youCantHideMore);
             return;
         }
@@ -51,10 +49,8 @@ public class HideCommand extends PlayerCommand {
             
             //TODO: Log error.
             TextComponent internalError = new TextComponent();
-            
             internalError.setText("Internal error, please try again. If the issue persists, please contact a server administrator.");
             internalError.setColor(ChatColor.RED);
-            
             commandSenderPlayer.sendMessage(internalError);
             return;
         }

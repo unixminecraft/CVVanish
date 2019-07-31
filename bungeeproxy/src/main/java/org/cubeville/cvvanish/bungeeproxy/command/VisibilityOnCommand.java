@@ -36,10 +36,8 @@ public class VisibilityOnCommand extends PlayerCommand {
         if(vanishPlugin.isPlayerFullyVisible(commandSenderPlayerId) || vanishPlugin.isPlayerUnlisted(commandSenderPlayerId)) {
             
             TextComponent youAreVisibleAlready = new TextComponent();
-            
             youAreVisibleAlready.setText("You are already able to be seen.");
             youAreVisibleAlready.setColor(ChatColor.RED);
-            
             commandSenderPlayer.sendMessage(youAreVisibleAlready);
             return;
         }
@@ -48,10 +46,8 @@ public class VisibilityOnCommand extends PlayerCommand {
             
             //TODO: Log error.
             TextComponent internalError = new TextComponent();
-            
             internalError.setText("Internal error, please try again. If the issue persists, please contact a server administrator.");
             internalError.setColor(ChatColor.RED);
-            
             commandSenderPlayer.sendMessage(internalError);
             return;
         }
@@ -110,10 +106,8 @@ public class VisibilityOnCommand extends PlayerCommand {
             //TODO: Log error.
             
             TextComponent unlikelyErrorOccurred = new TextComponent();
-            
             unlikelyErrorOccurred.setText("An unlikely error has occurred. Please report this to a server administrator, so they can look into it.");
             unlikelyErrorOccurred.setColor(ChatColor.RED);
-            
             commandSenderPlayer.sendMessage(unlikelyErrorOccurred);
         }
     }

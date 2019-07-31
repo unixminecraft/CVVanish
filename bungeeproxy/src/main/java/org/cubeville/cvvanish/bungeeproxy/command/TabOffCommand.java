@@ -36,10 +36,8 @@ public class TabOffCommand extends PlayerCommand {
         if(vanishPlugin.isPlayerHidden(commandSenderPlayerId) || vanishPlugin.isPlayerUnlisted(commandSenderPlayerId)) {
             
             TextComponent youAreAlreadyHiddenFromTab = new TextComponent();
-            
             youAreAlreadyHiddenFromTab.setText("You are already hidden from tab.");
             youAreAlreadyHiddenFromTab.setColor(ChatColor.RED);
-            
             commandSenderPlayer.sendMessage(youAreAlreadyHiddenFromTab);
             return;
         }
@@ -48,10 +46,8 @@ public class TabOffCommand extends PlayerCommand {
             
             //TODO: Log error.
             TextComponent internalError = new TextComponent();
-            
             internalError.setText("Internal error, please try again. If the issue persists, please contact a server administrator.");
             internalError.setColor(ChatColor.RED);
-            
             commandSenderPlayer.sendMessage(internalError);
             return;
         }
@@ -110,10 +106,8 @@ public class TabOffCommand extends PlayerCommand {
             //TODO: Log error.
             
             TextComponent unlikelyErrorOccurred = new TextComponent();
-            
             unlikelyErrorOccurred.setText("An unlikely error has occurred. Please report this to a server administrator, so they can look into it.");
             unlikelyErrorOccurred.setColor(ChatColor.RED);
-            
             commandSenderPlayer.sendMessage(unlikelyErrorOccurred);
         }
     }

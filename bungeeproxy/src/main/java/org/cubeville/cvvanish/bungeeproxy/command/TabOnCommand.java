@@ -36,10 +36,8 @@ public class TabOnCommand extends PlayerCommand {
         if(vanishPlugin.isPlayerFullyVisible(commandSenderPlayerId) || vanishPlugin.isPlayerVanished(commandSenderPlayerId)) {
             
             TextComponent youAreInTabAlready = new TextComponent();
-            
             youAreInTabAlready.setText("You are already listed in tab.");
             youAreInTabAlready.setColor(ChatColor.RED);
-            
             commandSenderPlayer.sendMessage(youAreInTabAlready);
             return;
         }
@@ -48,10 +46,8 @@ public class TabOnCommand extends PlayerCommand {
             
             //TODO: Log error.
             TextComponent internalError = new TextComponent();
-            
             internalError.setText("Internal error, please try again. If the issue persists, please contact a server administrator.");
             internalError.setColor(ChatColor.RED);
-            
             commandSenderPlayer.sendMessage(internalError);
             return;
         }
@@ -110,10 +106,8 @@ public class TabOnCommand extends PlayerCommand {
             //TODO: Log error.
             
             TextComponent unlikelyErrorOccurred = new TextComponent();
-            
             unlikelyErrorOccurred.setText("An unlikely error has occurred. Please report this to a server administrator, so they can look into it.");
             unlikelyErrorOccurred.setColor(ChatColor.RED);
-            
             commandSenderPlayer.sendMessage(unlikelyErrorOccurred);
         }
     }

@@ -39,10 +39,8 @@ public class ShowCommand extends PlayerCommand {
         if(vanishPlugin.isPlayerFullyVisible(commandSenderPlayerId)) {
             
             TextComponent youCantBecomeMoreVisible = new TextComponent();
-            
             youCantBecomeMoreVisible.setText("No. We won't make you more visible than you already are. It's impossible.");
             youCantBecomeMoreVisible.setColor(ChatColor.RED);
-            
             commandSenderPlayer.sendMessage(youCantBecomeMoreVisible);
             return;
         }
@@ -51,10 +49,8 @@ public class ShowCommand extends PlayerCommand {
             
             //TODO: Log error.
             TextComponent internalError = new TextComponent();
-            
             internalError.setText("Internal error, please try again. If the issue persists, please contact a server administrator.");
             internalError.setColor(ChatColor.RED);
-            
             commandSenderPlayer.sendMessage(internalError);
             return;
         }
