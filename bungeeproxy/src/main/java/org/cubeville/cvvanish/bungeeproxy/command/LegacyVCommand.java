@@ -18,6 +18,7 @@ public class LegacyVCommand extends PlayerCommand {
         super("v");
         setMinimumPermissionToUse(USE_PERMISSION);
         setNoPermissionMessage("Unknown command. Type \"/help\" for help.", ChatColor.WHITE);
+        setSyntax("Syntax: /v");
     }
 
     @Override

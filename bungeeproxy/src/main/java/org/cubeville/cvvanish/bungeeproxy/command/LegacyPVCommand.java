@@ -18,7 +18,7 @@ public class LegacyPVCommand extends PlayerCommand {
         super("pv");
         setMinimumPermissionToUse(USE_PERMISSION);
         setNoPermissionMessage("Unknown command. Type \"/help\" for help.", ChatColor.WHITE);
-        setSyntax("Syntax: /pv [tipu]");
+        setSyntax("Syntax: /pv");
         setNumberOfOptionalArguments(2);
     }
     
