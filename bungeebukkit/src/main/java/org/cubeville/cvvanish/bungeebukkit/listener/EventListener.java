@@ -257,7 +257,7 @@ public class EventListener implements Listener {
         bukkitRunnable.runTaskLater(vanishPlugin, 1);
     }
     
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerChangedWorldEvent(PlayerChangedWorldEvent playerChangedWorldEvent) {
         
         Player changingWorldPlayer = playerChangedWorldEvent.getPlayer();
@@ -468,7 +468,8 @@ public class EventListener implements Listener {
         }
     }
     
-    @EventHandler(priority = EventPriority.HIGHEST)
+    //TODO: If a way to avoid arrow contact is found, the EventPriority may change.
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onProjectileHitEvent(ProjectileHitEvent projectileHitEvent) {
         
         Entity hitEntity = projectileHitEvent.getHitEntity();
