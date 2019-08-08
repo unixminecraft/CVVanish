@@ -2,13 +2,13 @@ package org.cubeville.cvvanish.bungeeproxy;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
 
 import org.cubeville.cvipc.bungeeproxy.CVIPC;
 import org.cubeville.cvipc.bungeeproxy.IPCMessage;
+import org.cubeville.cvplayerdata.bungeecord.CVPlayerData;
 import org.cubeville.cvvanish.bungeeproxy.command.FakeJoinCommand;
 import org.cubeville.cvvanish.bungeeproxy.command.FakeQuitCommand;
 import org.cubeville.cvvanish.bungeeproxy.command.HideCommand;
@@ -26,8 +26,6 @@ import org.cubeville.cvvanish.bungeeproxy.thread.HiddenNotifier;
 import org.cubeville.cvvanish.bungeeproxy.thread.UnlistedNotifier;
 import org.cubeville.cvvanish.bungeeproxy.thread.VanishedNotifier;
 
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
 import net.md_5.bungee.config.Configuration;
@@ -48,6 +46,7 @@ public class CVVanish extends Plugin {
     
     private ConfigurationProvider yamlProvider;
     private CVIPC ipcPlugin;
+    private CVPlayerData playerDataPlugin;
     private File configurationDirectory;
     private File hiddenFile;
     private File pickupFile;
@@ -70,6 +69,12 @@ public class CVVanish extends Plugin {
         if(ipcPlugin == null) {
             //TODO: Log error, throw better things than this.
             throw new RuntimeException("Can't start CVVanish proxy-side without CVIPC proxy-side.");
+        }
+        
+        playerDataPlugin = (CVPlayerData) pluginManager.getPlugin("CVPlayerData");
+        if(playerDataPlugin == null) {
+            //TODO: Log error, throw better things than this.
+            throw new RuntimeException("Can't start CVVanish proxy-size without CVPlayerData.");
         }
         
         if(pluginManager.getPlugin("CVTools") == null) {
@@ -208,7 +213,7 @@ public class CVVanish extends Plugin {
             }
         }
         
-        pluginManager.registerListener(this, new EventListener(this));
+        pluginManager.registerListener(this, new EventListener(this, playerDataPlugin));
         
         pluginManager.registerCommand(this, new FakeJoinCommand(this));
         pluginManager.registerCommand(this, new FakeQuitCommand(this));
@@ -633,23 +638,5 @@ public class CVVanish extends Plugin {
         }
         
         return true;
-    }
-    
-    public void sendMessageAll(TextComponent... message) {
-        
-        Collection<ProxiedPlayer> onlinePlayers = getProxy().getPlayers();
-        for(ProxiedPlayer onlinePlayer : onlinePlayers) {
-            onlinePlayer.sendMessage(message);
-        }
-    }
-    
-    public void sendMessageWithPermission(String permission, TextComponent... message) {
-        
-        Collection<ProxiedPlayer> onlinePlayers = getProxy().getPlayers();
-        for(ProxiedPlayer onlinePlayer : onlinePlayers) {
-            if(onlinePlayer.hasPermission(permission)) {
-                onlinePlayer.sendMessage(message);
-            }
-        }
     }
 }

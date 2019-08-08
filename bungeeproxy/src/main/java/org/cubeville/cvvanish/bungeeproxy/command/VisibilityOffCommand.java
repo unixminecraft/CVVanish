@@ -87,7 +87,11 @@ public class VisibilityOffCommand extends PlayerCommand {
             hiddenStatusValue.setColor(ChatColor.DARK_AQUA);
             period.setColor(ChatColor.DARK_AQUA);
             
-            vanishPlugin.sendMessageWithPermission(NOTIFY_PERMISSION, playerNameValue, isNow, hiddenStatusValue, period);
+            for(ProxiedPlayer onlinePlayer : vanishPlugin.getProxy().getPlayers()) {
+                if(onlinePlayer.hasPermission(NOTIFY_PERMISSION)) {
+                    onlinePlayer.sendMessage(playerNameValue, isNow, hiddenStatusValue, period);
+                }
+            }
         }
         else if(vanished) {
             
@@ -99,7 +103,11 @@ public class VisibilityOffCommand extends PlayerCommand {
             hiddenStatusValue.setColor(ChatColor.DARK_AQUA);
             period.setColor(ChatColor.DARK_AQUA);
             
-            vanishPlugin.sendMessageWithPermission(NOTIFY_PERMISSION, playerNameValue, isNow, hiddenStatusValue, period);
+            for(ProxiedPlayer onlinePlayer : vanishPlugin.getProxy().getPlayers()) {
+                if(onlinePlayer.hasPermission(NOTIFY_PERMISSION)) {
+                    onlinePlayer.sendMessage(playerNameValue, isNow, hiddenStatusValue, period);
+                }
+            }
         }
         else {
             

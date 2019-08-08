@@ -10,6 +10,7 @@ import org.cubeville.common.bungeecord.command.PlayerCommand;
 import org.cubeville.cvvanish.bungeeproxy.CVVanish;
 
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
@@ -75,12 +76,17 @@ public class ShowCommand extends PlayerCommand {
         
         commandSenderPlayer.sendMessage(youAreNoLongerHidden, timeNowValue);
         
-        vanishPlugin.sendMessageWithPermission(NOTIFY_PERMISSION, playerNameValue, isNowFullyVisible);
+        ProxyServer proxyServer = vanishPlugin.getProxy();
+        for(ProxiedPlayer onlinePlayer : proxyServer.getPlayers()) {
+            if(onlinePlayer.hasPermission(NOTIFY_PERMISSION)) {
+                onlinePlayer.sendMessage(playerNameValue, isNowFullyVisible);
+            }
+        }
         
         if(!fakeJoin) {
             return;
         }
         
-        vanishPlugin.getProxy().getPluginManager().dispatchCommand(commandSenderPlayer, "fj");
+        proxyServer.getPluginManager().dispatchCommand(commandSenderPlayer, "fj");
     }
 }

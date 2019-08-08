@@ -29,22 +29,27 @@ public class FakeQuitCommand extends PlayerCommand {
     @Override
     public void execute(ProxiedPlayer commandSenderPlayer, Set<String> flags, List<String> arguments) {
         
-        TextComponent playerNameValue = new TextComponent();
+        TextComponent playerNameValueAll = new TextComponent();
         TextComponent leftTheGame = new TextComponent();
+        TextComponent playerNameValueNotify = new TextComponent();
         TextComponent isStillHere = new TextComponent();
         
-        playerNameValue.setText(commandSenderPlayer.getName());
+        playerNameValueAll.setText(commandSenderPlayer.getName());
         leftTheGame.setText(" left the game.");
+        playerNameValueNotify.setText(commandSenderPlayer.getName());
         isStillHere.setText(" is still here, they did not acutally leave.");
         
-        playerNameValue.setColor(ChatColor.YELLOW);
+        playerNameValueAll.setColor(ChatColor.YELLOW);
         leftTheGame.setColor(ChatColor.YELLOW);
+        playerNameValueNotify.setColor(ChatColor.DARK_AQUA);
         isStillHere.setColor(ChatColor.DARK_AQUA);
         
-        vanishPlugin.sendMessageAll(playerNameValue, leftTheGame);
-        
-        playerNameValue.setColor(ChatColor.DARK_AQUA);
-        
-        vanishPlugin.sendMessageWithPermission(NOTIFY_PERMISSION, playerNameValue, isStillHere);
+        for(ProxiedPlayer onlinePlayer : vanishPlugin.getProxy().getPlayers()) {
+            
+            onlinePlayer.sendMessage(playerNameValueAll, leftTheGame);
+            if(onlinePlayer.hasPermission(NOTIFY_PERMISSION)) {
+                onlinePlayer.sendMessage(playerNameValueNotify, isStillHere);
+            }
+        }
     }
 }

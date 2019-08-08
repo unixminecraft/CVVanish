@@ -29,22 +29,27 @@ public class FakeJoinCommand extends PlayerCommand {
     @Override
     public void execute(ProxiedPlayer commandSenderPlayer, Set<String> flags, List<String> arguments) {
         
-        TextComponent playerNameValue = new TextComponent();
+        TextComponent playerNameValueAll = new TextComponent();
         TextComponent joinedTheGame = new TextComponent();
+        TextComponent playerNameValueNotify = new TextComponent();
         TextComponent wasAlreadyHere = new TextComponent();
         
-        playerNameValue.setText(commandSenderPlayer.getName());
+        playerNameValueAll.setText(commandSenderPlayer.getName());
         joinedTheGame.setText(" joined the game.");
+        playerNameValueNotify.setText(commandSenderPlayer.getName());
         wasAlreadyHere.setText(" was already here, they acutally joined earlier.");
         
-        playerNameValue.setColor(ChatColor.YELLOW);
+        playerNameValueAll.setColor(ChatColor.YELLOW);
         joinedTheGame.setColor(ChatColor.YELLOW);
+        playerNameValueNotify.setColor(ChatColor.DARK_AQUA);
         wasAlreadyHere.setColor(ChatColor.DARK_AQUA);
         
-        vanishPlugin.sendMessageAll(playerNameValue, joinedTheGame);
-        
-        playerNameValue.setColor(ChatColor.DARK_AQUA);
-        
-        vanishPlugin.sendMessageWithPermission(NOTIFY_PERMISSION, playerNameValue, wasAlreadyHere);
+        for(ProxiedPlayer onlinePlayer : vanishPlugin.getProxy().getPlayers()) {
+            
+            onlinePlayer.sendMessage(playerNameValueAll, joinedTheGame);
+            if(onlinePlayer.hasPermission(NOTIFY_PERMISSION)) {
+                onlinePlayer.sendMessage(playerNameValueNotify, wasAlreadyHere);
+            }
+        }
     }
 }
