@@ -64,11 +64,11 @@ public class LegacyVCommand extends PlayerCommand {
         period.setText(".");
         
         thisIsTheLegacyVanishCommand.setColor(ChatColor.RED);
-        theNewCommandsAre.setColor(ChatColor.AQUA);
+        theNewCommandsAre.setColor(ChatColor.GREEN);
         hideCommandValue.setColor(ChatColor.GOLD);
-        and.setColor(ChatColor.AQUA);
+        and.setColor(ChatColor.GREEN);
         showCommandValue.setColor(ChatColor.GOLD);
-        period.setColor(ChatColor.AQUA);
+        period.setColor(ChatColor.GREEN);
         
         player.sendMessage(thisIsTheLegacyVanishCommand);
         player.sendMessage(theNewCommandsAre, hideCommandValue, and, showCommandValue, period);

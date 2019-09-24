@@ -87,25 +87,29 @@ public final class ShowCommand extends PlayerCommand {
         
         final TextComponent youAreNoLongerHidden = new TextComponent();
         final TextComponent timeNowValue = new TextComponent();
+        final TextComponent vanishNotification = new TextComponent();
         final TextComponent playerNameValue = new TextComponent();
         final TextComponent isNowFullyVisible = new TextComponent();
         
         youAreNoLongerHidden.setText("You are no longer hidden. ");
         timeNowValue.setText(formattedTimeNow);
+        vanishNotification.setText("[CVVanish] ");
         playerNameValue.setText(player.getName());
         isNowFullyVisible.setText(" is now fully visible.");
         
         youAreNoLongerHidden.setColor(ChatColor.GREEN);
         timeNowValue.setColor(ChatColor.GREEN);
-        playerNameValue.setColor(ChatColor.DARK_AQUA);
+        vanishNotification.setColor(ChatColor.DARK_AQUA);
+        playerNameValue.setColor(ChatColor.GOLD);
         isNowFullyVisible.setColor(ChatColor.DARK_AQUA);
         
         player.sendMessage(youAreNoLongerHidden, timeNowValue);
         
         final ProxyServer proxyServer = vanishPlugin.getProxy();
         for(final ProxiedPlayer onlinePlayer : proxyServer.getPlayers()) {
+        	
             if(onlinePlayer.hasPermission(NOTIFY_PERMISSION)) {
-                onlinePlayer.sendMessage(playerNameValue, isNowFullyVisible);
+                onlinePlayer.sendMessage(vanishNotification, playerNameValue, isNowFullyVisible);
             }
         }
         

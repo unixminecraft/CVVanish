@@ -85,19 +85,22 @@ public final class VisibilityOffCommand extends PlayerCommand {
         final TextComponent hiddenStatusValue = new TextComponent();
         final TextComponent period = new TextComponent();
         final TextComponent timeNowValue = new TextComponent();
+        final TextComponent vanishNotification = new TextComponent();
         final TextComponent playerNameValue = new TextComponent();
         final TextComponent isNow = new TextComponent();
         
         youAreNow.setText("You are now ");
         period.setText(". ");
         timeNowValue.setText(formattedTimeNow);
+        vanishNotification.setText("[CVVanish] ");
         playerNameValue.setText(player.getName());
         isNow.setText(" is now ");
         
         youAreNow.setColor(ChatColor.GREEN);
         period.setColor(ChatColor.GREEN);
         timeNowValue.setColor(ChatColor.GREEN);
-        playerNameValue.setColor(ChatColor.DARK_AQUA);
+        vanishNotification.setColor(ChatColor.DARK_AQUA);
+        playerNameValue.setColor(ChatColor.GOLD);
         isNow.setColor(ChatColor.DARK_AQUA);
         
         final boolean hidden = vanishPlugin.isHidden(playerId);
@@ -116,8 +119,9 @@ public final class VisibilityOffCommand extends PlayerCommand {
             period.setColor(ChatColor.DARK_AQUA);
             
             for(final ProxiedPlayer onlinePlayer : proxy.getPlayers()) {
+            	
                 if(onlinePlayer.hasPermission(NOTIFY_PERMISSION)) {
-                    onlinePlayer.sendMessage(playerNameValue, isNow, hiddenStatusValue, period);
+                    onlinePlayer.sendMessage(vanishNotification, playerNameValue, isNow, hiddenStatusValue, period);
                 }
             }
         }
@@ -132,8 +136,9 @@ public final class VisibilityOffCommand extends PlayerCommand {
             period.setColor(ChatColor.DARK_AQUA);
             
             for(final ProxiedPlayer onlinePlayer : proxy.getPlayers()) {
+            	
                 if(onlinePlayer.hasPermission(NOTIFY_PERMISSION)) {
-                    onlinePlayer.sendMessage(playerNameValue, isNow, hiddenStatusValue, period);
+                    onlinePlayer.sendMessage(vanishNotification, playerNameValue, isNow, hiddenStatusValue, period);
                 }
             }
         }

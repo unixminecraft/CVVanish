@@ -454,17 +454,17 @@ public final class CVVanish extends Plugin {
     	 * Command setup
     	 */
     	
-    	BaseCommand fakeJoinCommand = new FakeJoinCommand(this);
-    	BaseCommand fakeQuitCommand = new FakeQuitCommand(this);
-    	BaseCommand hideCommand = new HideCommand(this);
-    	BaseCommand legacyPVCommand = new LegacyPVCommand(this);
-    	BaseCommand legacyVCommand = new LegacyVCommand(this);
-    	BaseCommand pickupCommand = new PickupCommand(this);
-    	BaseCommand showCommand = new ShowCommand(this);
-    	BaseCommand tabOffCommand = new TabOffCommand(this);
-    	BaseCommand tabOnCommand = new TabOnCommand(this);
-    	BaseCommand visibilityOffCommand = new VisibilityOffCommand(this);
-    	BaseCommand visibilityOnCommand = new VisibilityOnCommand(this);
+    	final BaseCommand fakeJoinCommand = new FakeJoinCommand(this);
+    	final BaseCommand fakeQuitCommand = new FakeQuitCommand(this);
+    	final BaseCommand hideCommand = new HideCommand(this);
+    	final BaseCommand legacyPVCommand = new LegacyPVCommand(this);
+    	final BaseCommand legacyVCommand = new LegacyVCommand(this);
+    	final BaseCommand pickupCommand = new PickupCommand(this);
+    	final BaseCommand showCommand = new ShowCommand(this);
+    	final BaseCommand tabOffCommand = new TabOffCommand(this);
+    	final BaseCommand tabOnCommand = new TabOnCommand(this);
+    	final BaseCommand visibilityOffCommand = new VisibilityOffCommand(this);
+    	final BaseCommand visibilityOnCommand = new VisibilityOnCommand(this);
     	
     	pluginManager.registerCommand(this, fakeJoinCommand);
     	pluginManager.registerCommand(this, fakeQuitCommand);
@@ -482,7 +482,7 @@ public final class CVVanish extends Plugin {
     	 * IPCInterface setup
     	 */
     	
-    	IPCInterface proxyIPCInterface = new ProxyIPCInterface(this);
+    	final IPCInterface proxyIPCInterface = new ProxyIPCInterface(this);
     	
     	ipcPlugin.registerIPCInterface(CHANNEL_CVVANISH_BUKKIT_READY, proxyIPCInterface);
     	

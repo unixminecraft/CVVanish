@@ -56,24 +56,28 @@ public final class FakeQuitCommand extends PlayerCommand {
     	
 		final TextComponent playerNameValueAll = new TextComponent();
 		final TextComponent leftTheGame = new TextComponent();
+		final TextComponent vanishNotification = new TextComponent();
 		final TextComponent playerNameValueNotify = new TextComponent();
 		final TextComponent isStillHere = new TextComponent();
         
         playerNameValueAll.setText(player.getName());
         leftTheGame.setText(" left the game.");
+        vanishNotification.setText("[CVVanish] ");
         playerNameValueNotify.setText(player.getName());
         isStillHere.setText(" is still here, they did not acutally leave.");
         
         playerNameValueAll.setColor(ChatColor.YELLOW);
         leftTheGame.setColor(ChatColor.YELLOW);
-        playerNameValueNotify.setColor(ChatColor.DARK_AQUA);
+        vanishNotification.setColor(ChatColor.DARK_AQUA);
+        playerNameValueNotify.setColor(ChatColor.GOLD);
         isStillHere.setColor(ChatColor.DARK_AQUA);
         
         for(final ProxiedPlayer onlinePlayer : vanishPlugin.getProxy().getPlayers()) {
             
             onlinePlayer.sendMessage(playerNameValueAll, leftTheGame);
+            
             if(onlinePlayer.hasPermission(NOTIFY_PERMISSION)) {
-                onlinePlayer.sendMessage(playerNameValueNotify, isStillHere);
+                onlinePlayer.sendMessage(vanishNotification, playerNameValueNotify, isStillHere);
             }
         }
     }
