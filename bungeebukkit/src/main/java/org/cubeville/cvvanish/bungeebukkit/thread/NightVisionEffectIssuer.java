@@ -1,3 +1,18 @@
+/*
+ * CVVanish Copyright (C) 2019 Cubeville
+ * 
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU General Public License as published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. If
+ * not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.cubeville.cvvanish.bungeebukkit.thread;
 
 import java.util.HashSet;
@@ -7,42 +22,52 @@ import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitScheduler;
 import org.cubeville.cvvanish.bungeebukkit.CVVanish;
 
-public class NightVisionEffectIssuer implements Runnable {
+public final class NightVisionEffectIssuer implements Runnable {
 
-    private CVVanish vanishPlugin;
+    private final CVVanish vanishPlugin;
+    
+    private final Server bukkitServer;
+    private final BukkitScheduler bukkitScheduler;
+    
     private int nightVisionScheduledTaskIdNumber;
     
-    public NightVisionEffectIssuer(CVVanish vanishPlugin) {
+    public NightVisionEffectIssuer(final CVVanish vanishPlugin) {
+    	
         this.vanishPlugin = vanishPlugin;
+        
+        this.bukkitServer = vanishPlugin.getServer();
+        this.bukkitScheduler = this.bukkitServer.getScheduler();
+        
     }
     
     public void start() {
-        nightVisionScheduledTaskIdNumber = vanishPlugin.getServer().getScheduler().scheduleSyncRepeatingTask(vanishPlugin, this, 2400, 2400);
+    	
+        nightVisionScheduledTaskIdNumber = bukkitScheduler.scheduleSyncRepeatingTask(vanishPlugin, this, 2400, 2400);
     }
     
     public void stop() {
         
         if(nightVisionScheduledTaskIdNumber != -1) {
-            vanishPlugin.getServer().getScheduler().cancelTask(nightVisionScheduledTaskIdNumber);
+        	bukkitScheduler.cancelTask(nightVisionScheduledTaskIdNumber);
         }
     }
     
     @Override
     public void run() {
         
-        Server bukkitServer = vanishPlugin.getServer();
-        HashSet<UUID> hiddenPlayerIds = vanishPlugin.getVanishedPlayerIds();
+    	final HashSet<UUID> hiddenPlayerIds = vanishPlugin.getVanishedPlayerIds();
         
-        for(UUID hiddenPlayerId : hiddenPlayerIds) {
+        for(final UUID hiddenPlayerId : hiddenPlayerIds) {
             
-            Player hiddenPlayer = bukkitServer.getPlayer(hiddenPlayerId);
+        	final Player hiddenPlayer = bukkitServer.getPlayer(hiddenPlayerId);
             if(hiddenPlayer == null) {
                 continue;
             }
             
-            PotionEffect nightVisionPotionEffect = new PotionEffect(PotionEffectType.NIGHT_VISION, 2400, 1);
+            final PotionEffect nightVisionPotionEffect = new PotionEffect(PotionEffectType.NIGHT_VISION, 2400, 1);
             hiddenPlayer.removePotionEffect(PotionEffectType.NIGHT_VISION);
             hiddenPlayer.addPotionEffect(nightVisionPotionEffect);
         }

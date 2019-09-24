@@ -1,53 +1,130 @@
+/*
+ * CVVanish Copyright (C) 2019 Cubeville
+ * 
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU General Public License as published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. If
+ * not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.cubeville.cvvanish.bungeebukkit;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Team;
 import org.cubeville.cvipc.bungeebukkit.CVIPC;
 import org.cubeville.cvipc.bungeebukkit.IPCMessage;
+import org.cubeville.cvipc.bungeebukkit.listener.IPCInterface;
 import org.cubeville.cvvanish.bungeebukkit.listener.EventListener;
-import org.cubeville.cvvanish.bungeebukkit.listener.VanishIPCReader;
+import org.cubeville.cvvanish.bungeebukkit.listener.BukkitIPCInterface;
 import org.cubeville.cvvanish.bungeebukkit.thread.NightVisionEffectIssuer;
 
 public class CVVanish extends JavaPlugin {
-    
+	
+	public static final String CHANNEL_VANISH_INITIALIZE = "VANISH_INITIALIZE";
+	public static final String CHANNEL_VANISH_ENABLE = "VANISH_ENABLE";
+	public static final String CHANNEL_VANISH_DISABLE = "VANISH_DISABLE";
+	
+	public static final String CHANNEL_PICKUP_INITIALIZE = "PICKUP_INITIALIZE";
+	public static final String CHANNEL_PICKUP_ENABLE = "PICKUP_ENABLE";
+	public static final String CHANNEL_PICKUP_DISABLE = "PICKUP_DISABLE";
+	
     private static final String VANISHED_TEAM_NAME = "VanishedTeam";
     
-    private CVIPC ipcPlugin;
+    private Logger logger;
+    
     private HashSet<UUID> vanishedPlayerIds;
     private HashSet<UUID> pickupPlayerIds;
+    
+    private CVIPC ipcPlugin;
+    
     private NightVisionEffectIssuer nightVisionEffectIssuer;
     
     @Override
     public void onEnable() {
         
-        PluginManager pluginManager = getServer().getPluginManager();
+    	/*
+    	 * Logger setup
+    	 */
+    	
+    	logger = getLogger();
+    	
+    	/*
+    	 * License information
+    	 */
+    	
+    	displayLicenseInformation();
+    	
+    	/*
+    	 * Vanished and pickup player setup
+    	 */
+    	
+    	vanishedPlayerIds = new HashSet<UUID>();
+    	pickupPlayerIds = new HashSet<UUID>();
+    	
+    	/*
+    	 * Dependency plugin setup
+    	 */
+    	
+    	final PluginManager pluginManager = getServer().getPluginManager();
+    	
+    	final Plugin possibleIPCPlugin = pluginManager.getPlugin("CVIPC");
+    	if(possibleIPCPlugin == null) {
+    		
+    		logger.log(Level.SEVERE, "CVIPC plugin not found, cannot start CVVanish.");
+    		throw new RuntimeException("CVIPC plugin not found, cannot start CVVanish.");
+    	}
+    	if(!(possibleIPCPlugin instanceof CVIPC)) {
+    		
+    		logger.log(Level.SEVERE, "CVIPC plugin not of the correct type, cannot start CVVanish.");
+    		throw new RuntimeException("CVIPC plugin not of the correct type, cannot start CVVanish.");
+    	}
+    	
+    	ipcPlugin = (CVIPC) possibleIPCPlugin;
+    	
+    	/*
+    	 * IPC Interface setup
+    	 */
+    	
+    	final IPCInterface bukkitIPCInterface = new BukkitIPCInterface(this);
+    	
+        ipcPlugin.registerIPCInterface(CHANNEL_VANISH_INITIALIZE, bukkitIPCInterface);
+        ipcPlugin.registerIPCInterface(CHANNEL_VANISH_ENABLE, bukkitIPCInterface);
+        ipcPlugin.registerIPCInterface(CHANNEL_VANISH_DISABLE, bukkitIPCInterface);
+        
+        ipcPlugin.registerIPCInterface(CHANNEL_PICKUP_INITIALIZE, bukkitIPCInterface);
+        ipcPlugin.registerIPCInterface(CHANNEL_PICKUP_ENABLE, bukkitIPCInterface);
+        ipcPlugin.registerIPCInterface(CHANNEL_PICKUP_DISABLE, bukkitIPCInterface);
+        
+        final IPCMessage initializationReadyMessage = new IPCMessage("CVVANISH_BUKKIT_READY");
+        
+        initializationReadyMessage.addMessage("cvvanish_bukkit_ready");
+        
+        ipcPlugin.sendIPCMessage(initializationReadyMessage);
+        
+        /*
+         * Event listener setup
+         */
         
         pluginManager.registerEvents(new EventListener(this), this);
-        ipcPlugin = (CVIPC) pluginManager.getPlugin("CVIPC");
-        VanishIPCReader vanishIPCReader = new VanishIPCReader(this);
-        
-        ipcPlugin.registerIPCReader("initializeVanishPlayer", vanishIPCReader);
-        ipcPlugin.registerIPCReader("initializePlayerPickup", vanishIPCReader);
-        
-        ipcPlugin.registerIPCReader("vanishPlayer", vanishIPCReader);
-        ipcPlugin.registerIPCReader("enablePlayerPickup", vanishIPCReader);
-        
-        ipcPlugin.registerIPCReader("unvanishPlayer", vanishIPCReader);
-        ipcPlugin.registerIPCReader("disablePlayerPickup", vanishIPCReader);
-        
-        IPCMessage ipcMessage = new IPCMessage("vanishInitializer");
-        ipcMessage.addMessage("readyForVanishInitialization");
-        
-        ipcPlugin.sendIPCMessage(ipcMessage);
-        
-        vanishedPlayerIds = new HashSet<UUID>();
-        pickupPlayerIds = new HashSet<UUID>();
+    	
+    	/*
+    	 * Thread setup
+    	 */
         
         nightVisionEffectIssuer = new NightVisionEffectIssuer(this);
         nightVisionEffectIssuer.start();
@@ -58,119 +135,165 @@ public class CVVanish extends JavaPlugin {
         
         nightVisionEffectIssuer.stop();
         
-        ipcPlugin.deregisterIPCReader("initializeVanishPlayer");
-        ipcPlugin.deregisterIPCReader("initializePlayerPickup");
+        ipcPlugin.deregisterIPCInterface(CHANNEL_PICKUP_DISABLE);
+        ipcPlugin.deregisterIPCInterface(CHANNEL_PICKUP_ENABLE);
+        ipcPlugin.deregisterIPCInterface(CHANNEL_PICKUP_INITIALIZE);
         
-        ipcPlugin.deregisterIPCReader("vanishPlayer");
-        ipcPlugin.deregisterIPCReader("enablePlayerPickup");
-        
-        ipcPlugin.deregisterIPCReader("unvanishPlayer");
-        ipcPlugin.deregisterIPCReader("disablePlayerPickup");
+        ipcPlugin.deregisterIPCInterface(CHANNEL_PICKUP_INITIALIZE);
+        ipcPlugin.deregisterIPCInterface(CHANNEL_VANISH_ENABLE);
+        ipcPlugin.deregisterIPCInterface(CHANNEL_VANISH_INITIALIZE);
     }
     
     public HashSet<UUID> getVanishedPlayerIds() {
+    	
         return vanishedPlayerIds;
     }
     
-    public boolean isPlayerVanished(UUID playerToCheckId) {
-        return vanishedPlayerIds.contains(playerToCheckId);
+    public boolean isVanishEnabled(final UUID playerId) {
+    	
+        return vanishedPlayerIds.contains(playerId);
     }
     
-    public boolean vanishPlayer(UUID playerToVanishId) {
+    public boolean enableVanish(final UUID playerId) {
         
-        if(playerToVanishId == null) {
+        if(playerId == null) {
             return false;
         }
         
-        Player playerToVanish = getServer().getPlayer(playerToVanishId);
-        if(playerToVanish == null) {
+        final Player player = getServer().getPlayer(playerId);
+        if(player == null) {
             return false;
         }
         
-        if(isPlayerVanished(playerToVanishId)) {
+        if(isVanishEnabled(playerId)) {
             return false;
         }
         
-        vanishedPlayerIds.add(playerToVanishId);
+        vanishedPlayerIds.add(playerId);
         
-        for(Player otherOnlinePlayer : (Collection<? extends Player>) getServer().getOnlinePlayers()) {
+        for(final Player onlinePlayer : (Collection<? extends Player>) getServer().getOnlinePlayers()) {
             
-            if(otherOnlinePlayer.getUniqueId().equals(playerToVanishId)) {
+            if(onlinePlayer.getUniqueId().equals(playerId)) {
                 continue;
             }
-            if(otherOnlinePlayer.hasPermission("cvvanish.vanish.view")) {
+            if(onlinePlayer.hasPermission("cvvanish.vanish.view")) {
                 continue;
             }
-            otherOnlinePlayer.hidePlayer(this, playerToVanish);
+            onlinePlayer.hidePlayer(this, player);
         }
         
         //TODO: Check to make sure the invisible person doesn't push the visible
         //      people, and not the other way around (invisible pushes visible).
-        playerToVanish.setCollidable(false);
+        player.setCollidable(false);
         
-        Team playerToVanishTeam = playerToVanish.getScoreboard().getTeam(VANISHED_TEAM_NAME);
-        if(playerToVanishTeam == null) {
-            playerToVanishTeam = playerToVanish.getScoreboard().registerNewTeam(VANISHED_TEAM_NAME);
+        Team vanishTeam = player.getScoreboard().getTeam(VANISHED_TEAM_NAME);
+        if(vanishTeam == null) {
+            vanishTeam = player.getScoreboard().registerNewTeam(VANISHED_TEAM_NAME);
         }
         
-        playerToVanishTeam.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
-        playerToVanishTeam.addEntry(playerToVanish.getName());
+        vanishTeam.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
+        vanishTeam.addEntry(player.getName());
         
         return true;
     }
     
-    public boolean unvanishPlayer(UUID playerToUnvanishId) {
+    public boolean disableVanish(final UUID playerId) {
         
-        if(playerToUnvanishId == null) {
+        if(playerId == null) {
             return false;
         }
         
-        Player playerToUnvanish = getServer().getPlayer(playerToUnvanishId);
-        if(playerToUnvanish == null) {
+        final Player player = getServer().getPlayer(playerId);
+        if(player == null) {
             return false;
         }
         
-        if(!isPlayerVanished(playerToUnvanishId)) {
+        if(!isVanishEnabled(playerId)) {
             return false;
         }
         
-        vanishedPlayerIds.remove(playerToUnvanishId);
+        vanishedPlayerIds.remove(playerId);
         
-        for(Player otherOnlinePlayer : (Collection<? extends Player>) getServer().getOnlinePlayers()) {
+        for(final Player onlinePlayer : (Collection<? extends Player>) getServer().getOnlinePlayers()) {
             
-            if(otherOnlinePlayer.getUniqueId().equals(playerToUnvanishId)) {
+            if(onlinePlayer.getUniqueId().equals(playerId)) {
                 continue;
             }
-            otherOnlinePlayer.showPlayer(this, playerToUnvanish);
+            onlinePlayer.showPlayer(this, player);
         }
         
-        playerToUnvanish.setCollidable(true);
+        player.setCollidable(true);
         
-        Team playerToUnvanishTeam = playerToUnvanish.getScoreboard().getTeam(VANISHED_TEAM_NAME);
-        if(playerToUnvanishTeam != null) {
-            playerToUnvanishTeam.removeEntry(playerToUnvanish.getName());
+        final Team vanishTeam = player.getScoreboard().getTeam(VANISHED_TEAM_NAME);
+        if(vanishTeam != null) {
+            vanishTeam.removeEntry(player.getName());
         }
         
         return true;
     }
     
-    public boolean isPlayerPickupEnabled(UUID playerToCheckId) {
-        return pickupPlayerIds.contains(playerToCheckId);
+    public boolean isPickupEnabled(final UUID playerId) {
+    	
+        return pickupPlayerIds.contains(playerId);
     }
     
-    public boolean enablePlayerPickup(UUID playerToEnablePickupId) {
+    public boolean enablePickup(final UUID playerId) {
         
-        if(playerToEnablePickupId == null) {
+        if(playerId == null) {
             return false;
         }
-        return pickupPlayerIds.add(playerToEnablePickupId);
+        
+        return pickupPlayerIds.add(playerId);
     }
     
-    public boolean disablePlayerPickup(UUID playerToDisablePickupId) {
+    public boolean disablePickup(final UUID playerId) {
         
-        if(playerToDisablePickupId == null) {
+        if(playerId == null) {
             return false;
         }
-        return pickupPlayerIds.remove(playerToDisablePickupId);
+        
+        return pickupPlayerIds.remove(playerId);
     }
+    
+	private void displayLicenseInformation() {
+		
+		/*
+		 * CVVanish Copyright (C) 2019 Cubeville
+		 * 
+		 * This program is free software: you can redistribute it and/or modify it under the terms of the
+		 * GNU General Public License as published by the Free Software Foundation, either version 3 of the
+		 * License, or (at your option) any later version.
+		 * 
+		 * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+		 * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+		 * General Public License for more details.
+		 * 
+		 * You should have received a copy of the GNU General Public License along with this program. If
+		 * not, see <http://www.gnu.org/licenses/>.
+		 */
+		
+		logger.log(Level.INFO, "//===========================================//");
+		logger.log(Level.INFO, "//   CVVanish Copyright (C) 2019 Cubeville   //");
+		logger.log(Level.INFO, "//                                           //");
+		logger.log(Level.INFO, "// This program is free software: you can    //");
+		logger.log(Level.INFO, "// redistribute it and/or modify it under    //");
+		logger.log(Level.INFO, "// the terms of these GNU General Public     //");
+		logger.log(Level.INFO, "// License as published by the Free Software //");
+		logger.log(Level.INFO, "// Foundation, either version 3 of the       //");
+		logger.log(Level.INFO, "// License, or (at your opinion) any later   //");
+		logger.log(Level.INFO, "// version.                                  //");
+		logger.log(Level.INFO, "//                                           //");
+		logger.log(Level.INFO, "// This program is distributed in the hope   //");
+		logger.log(Level.INFO, "// that is till be useful, but WITHOUT ANY   //");
+		logger.log(Level.INFO, "// WARRANTY; without even the implied        //");
+		logger.log(Level.INFO, "// warranty of MERCHANTABILITY or FITNESS    //");
+		logger.log(Level.INFO, "// FOR A PARTICULAR PURPOSE. See GNU General //");
+		logger.log(Level.INFO, "// Public License for more details.          //");
+		logger.log(Level.INFO, "//                                           //");
+		logger.log(Level.INFO, "// You should have received a copy of the    //");
+		logger.log(Level.INFO, "// GNU General Public License along with     //");
+		logger.log(Level.INFO, "// this program. If not, see                 //");
+		logger.log(Level.INFO, "// <http://www.gnu.org/licenses/>            //");
+		logger.log(Level.INFO, "//===========================================//");
+	}
 }

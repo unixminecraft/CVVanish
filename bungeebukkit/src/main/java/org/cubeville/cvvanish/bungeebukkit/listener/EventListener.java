@@ -1,9 +1,24 @@
+/*
+ * CVVanish Copyright (C) 2019 Cubeville
+ * 
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU General Public License as published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. If
+ * not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.cubeville.cvvanish.bungeebukkit.listener;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -41,7 +56,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.cubeville.cvvanish.bungeebukkit.CVVanish;
 
 @SuppressWarnings("deprecation")
-public class EventListener implements Listener {
+public final class EventListener implements Listener {
     
     private static final class PlayerState {
         
@@ -49,19 +64,19 @@ public class EventListener implements Listener {
         private final boolean allowedFlight;
         private final boolean flying;
         
-        private PlayerState(GameMode gameMode, boolean allowedFlight, boolean flying) {
+        private PlayerState(final GameMode gameMode, final boolean allowedFlight, final boolean flying) {
             
             this.gameMode = gameMode;
             this.allowedFlight = allowedFlight;
             this.flying = flying;
         }
         
-        private static PlayerState getPlayerState(Player player) {
+        private static PlayerState getPlayerState(final Player player) {
             
             return new PlayerState(player.getGameMode(), player.getAllowFlight(), player.isFlying());
         }
         
-        private void setPlayerState(Player player) {
+        private void setPlayerState(final Player player) {
             
             player.setGameMode(gameMode);
             player.setAllowFlight(allowedFlight);
@@ -69,17 +84,20 @@ public class EventListener implements Listener {
         }
     }
     
-    private CVVanish vanishPlugin;
-    private HashMap<UUID, PlayerState> playerStateInformation;
-    private HashSet<InventoryType> silentlyViewableInventoryTypes;
-    private HashSet<Material> interactDisallowedMaterials;
-    private HashSet<Material> silentlyViewableMaterials;
+    private final CVVanish vanishPlugin;
     
-    public EventListener(CVVanish vanishPlugin) {
+    private final ConcurrentHashMap<UUID, PlayerState> playerStateInformation;
+    
+    private final HashSet<InventoryType> silentlyViewableInventoryTypes;
+    private final HashSet<Material> interactDisallowedMaterials;
+    private final HashSet<Material> silentlyViewableMaterials;
+    
+    public EventListener(final CVVanish vanishPlugin) {
         
         this.vanishPlugin = vanishPlugin;
         
-        playerStateInformation = new HashMap<UUID, PlayerState>();
+        playerStateInformation = new ConcurrentHashMap<UUID, PlayerState>();
+        
         silentlyViewableInventoryTypes = new HashSet<InventoryType>();
         interactDisallowedMaterials = new HashSet<Material>();
         silentlyViewableMaterials = new HashSet<Material>();
@@ -129,128 +147,130 @@ public class EventListener implements Listener {
     }
     
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onEntityDamageEvent(EntityDamageEvent entityDamageEvent) {
+    public void onEntityDamage(final EntityDamageEvent event) {
         
-        Entity damagedEntity = entityDamageEvent.getEntity();
-        if(!(damagedEntity instanceof Player)) {
+    	final Entity entity = event.getEntity();
+        if(!(entity instanceof Player)) {
             return;
         }
         
-        UUID damagedPlayerId = ((Player) damagedEntity).getUniqueId();
-        if(!vanishPlugin.isPlayerVanished(damagedPlayerId)) {
+        final UUID playerId = ((Player) entity).getUniqueId();
+        if(!vanishPlugin.isVanishEnabled(playerId)) {
             return;
         }
         
-        entityDamageEvent.setCancelled(true);
+        event.setCancelled(true);
     }
     
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onEntityPickupItemEvent(EntityPickupItemEvent entityPickupItemEvent) {
+    public void onEntityPickupItem(final EntityPickupItemEvent event) {
         
-        LivingEntity pickingUpLivingEntity = entityPickupItemEvent.getEntity();
-        if(!(pickingUpLivingEntity instanceof Player)) {
+    	final LivingEntity livingEntity = event.getEntity();
+        if(!(livingEntity instanceof Player)) {
             return;
         }
         
-        UUID pickingUpPlayerId = ((Player) pickingUpLivingEntity).getUniqueId();
-        if(!vanishPlugin.isPlayerVanished(pickingUpPlayerId)) {
+        final UUID playerId = ((Player) livingEntity).getUniqueId();
+        if(!vanishPlugin.isVanishEnabled(playerId)) {
             return;
         }
         
-        if(vanishPlugin.isPlayerPickupEnabled(pickingUpPlayerId)) {
+        if(vanishPlugin.isPickupEnabled(playerId)) {
             return;
         }
         
-        entityPickupItemEvent.setCancelled(true);
+        event.setCancelled(true);
     }
     
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onEntityTargetEvent(EntityTargetEvent entityTargetEvent) {
+    public void onEntityTarget(final EntityTargetEvent event) {
         
-        Entity targetedEntity = entityTargetEvent.getTarget();
-        if(!(targetedEntity instanceof Player)) {
+    	final Entity entity = event.getTarget();
+        if(!(entity instanceof Player)) {
             return;
         }
         
-        UUID targetedPlayerId = ((Player) targetedEntity).getUniqueId();
-        if(!vanishPlugin.isPlayerVanished(targetedPlayerId)) {
+        final UUID playerId = ((Player) entity).getUniqueId();
+        if(!vanishPlugin.isVanishEnabled(playerId)) {
             return;
         }
         
-        entityTargetEvent.setCancelled(true);
+        event.setCancelled(true);
     }
     
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onFoodLevelChangeEvent(FoodLevelChangeEvent foodLevelChangeEvent) {
+    public void onFoodLevelChange(final FoodLevelChangeEvent event) {
         
-        HumanEntity foodChangedHumanEntity = foodLevelChangeEvent.getEntity();
-        if(!(foodChangedHumanEntity instanceof Player)) {
+    	final HumanEntity humanEntity = event.getEntity();
+        if(!(humanEntity instanceof Player)) {
             return;
         }
         
-        UUID foodChangedPlayerId = ((Player) foodChangedHumanEntity).getUniqueId();
-        if(!vanishPlugin.isPlayerVanished(foodChangedPlayerId)) {
+        final UUID playerId = ((Player) humanEntity).getUniqueId();
+        if(!vanishPlugin.isVanishEnabled(playerId)) {
             return;
         }
         
-        foodLevelChangeEvent.setCancelled(true);
+        event.setCancelled(true);
     }
     
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onInventoryClickEvent(InventoryClickEvent inventoryClickEvent) {
+    public void onInventoryClick(final InventoryClickEvent event) {
         
-        HumanEntity clickingHumanEntity = inventoryClickEvent.getWhoClicked();
-        if(!(clickingHumanEntity instanceof Player)) {
+    	final HumanEntity humanEntity = event.getWhoClicked();
+    	
+        if(!(humanEntity instanceof Player)) {
             return;
         }
         
-        Player clickingPlayer = (Player) clickingHumanEntity;
-        UUID clickingPlayerId = clickingPlayer.getUniqueId();
+        final Player player = (Player) humanEntity;
+        final UUID playerId = player.getUniqueId();
         
-        if(!vanishPlugin.isPlayerVanished(clickingPlayerId)) {
+        if(!vanishPlugin.isVanishEnabled(playerId)) {
             return;
         }
         
-        if(!playerStateInformation.containsKey(clickingPlayerId)) {
+        if(!playerStateInformation.containsKey(playerId)) {
             return;
         }
         
-        if(clickingPlayer.getGameMode() == GameMode.SPECTATOR) {
-            inventoryClickEvent.setCancelled(false);
+        if(player.getGameMode() == GameMode.SPECTATOR) {
+            event.setCancelled(false);
         }
     }
     
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onInventoryCloseEvent(InventoryCloseEvent inventoryCloseEvent) {
+    public void onInventoryClose(final InventoryCloseEvent event) {
         
-        HumanEntity humanEntityClosingInventory = inventoryCloseEvent.getPlayer();
-        if(!(humanEntityClosingInventory instanceof Player)) {
+    	final HumanEntity humanEntity = event.getPlayer();
+    	
+        if(!(humanEntity instanceof Player)) {
             return;
         }
         
-        final Player playerClosingInventory = (Player) humanEntityClosingInventory;
-        final UUID playerClosingInventoryId = playerClosingInventory.getUniqueId();
+        final Player player = (Player) humanEntity;
+        final UUID playerId = player.getUniqueId();
         
-        if(!playerStateInformation.containsKey(playerClosingInventoryId)) {
+        if(!playerStateInformation.containsKey(playerId)) {
             return;
         }
         
-        if(!silentlyViewableInventoryTypes.contains(playerClosingInventory.getInventory().getType())) {
+        if(!silentlyViewableInventoryTypes.contains(player.getInventory().getType())) {
             return;
         }
         
-        BukkitRunnable bukkitRunnable = new BukkitRunnable() {
+        final BukkitRunnable bukkitRunnable = new BukkitRunnable() {
             
             @Override
             public void run() {
                 
-                PlayerState playerState = playerStateInformation.get(playerClosingInventoryId);
+            	final PlayerState playerState = playerStateInformation.get(playerId);
                 if(playerState == null) {
                     return;
                 }
                 
-                playerState.setPlayerState(playerClosingInventory);
-                playerStateInformation.remove(playerClosingInventoryId);
+                playerState.setPlayerState(player);
+                playerStateInformation.remove(playerId);
             }
         };
         
@@ -258,231 +278,238 @@ public class EventListener implements Listener {
     }
     
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onPlayerChangedWorldEvent(PlayerChangedWorldEvent playerChangedWorldEvent) {
+    public void onPlayerChangedWorld(final PlayerChangedWorldEvent event) {
         
-        Player changingWorldPlayer = playerChangedWorldEvent.getPlayer();
-        if(vanishPlugin.isPlayerVanished(changingWorldPlayer.getUniqueId())) {
+    	final Player player = event.getPlayer();
+        if(vanishPlugin.isVanishEnabled(player.getUniqueId())) {
             
-            PotionEffect nightVisionPotionEffect = new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 1);
-            changingWorldPlayer.addPotionEffect(nightVisionPotionEffect);
+        	final PotionEffect nightVisionPotionEffect = new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 1);
+            player.addPotionEffect(nightVisionPotionEffect);
         }
     }
     
     @EventHandler(priority = EventPriority.HIGH)
-    public void onPlayerGameModeChangeEvent(PlayerGameModeChangeEvent playerGameModeChangeEvent) {
+    public void onPlayerGameModeChange(final PlayerGameModeChangeEvent event) {
         
-        UUID playerChangingGameModeId = playerGameModeChangeEvent.getPlayer().getUniqueId();
-        GameMode newGameMode = playerGameModeChangeEvent.getNewGameMode();
+    	final UUID playerId = event.getPlayer().getUniqueId();
+    	final GameMode newGameMode = event.getNewGameMode();
         
-        if(playerStateInformation.containsKey(playerChangingGameModeId) && newGameMode == GameMode.SPECTATOR) {
-            if(playerGameModeChangeEvent.isCancelled()) {
-                playerGameModeChangeEvent.setCancelled(false);
+        if(playerStateInformation.containsKey(playerId) && newGameMode == GameMode.SPECTATOR) {
+            if(event.isCancelled()) {
+                event.setCancelled(false);
             }
         }
     }
     
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerInteractEvent(PlayerInteractEvent playerInteractEvent) {
+    public void onPlayerInteract(final PlayerInteractEvent event) {
         
-        Player interactingPlayer = playerInteractEvent.getPlayer();
-        UUID interactingPlayerId = interactingPlayer.getUniqueId();
-        if(!vanishPlugin.isPlayerVanished(interactingPlayerId)) {
+    	final Player player = event.getPlayer();
+    	final UUID playerId = player.getUniqueId();
+    	
+        if(!vanishPlugin.isVanishEnabled(playerId)) {
             return;
         }
         
-        Action playerInteractEventAction = playerInteractEvent.getAction();
-        Block clickedBlock = playerInteractEvent.getClickedBlock();
+        final Action action = event.getAction();
+        final Block block = event.getClickedBlock();
         
-        if(playerInteractEventAction == Action.PHYSICAL) {
-            if(clickedBlock != null) {
+        if(action == Action.PHYSICAL) {
+        	
+            if(block != null) {
                 
-                Material clickedBlockMaterial = clickedBlock.getType();
-                if(interactDisallowedMaterials.contains(clickedBlockMaterial)) {
-                    playerInteractEvent.setCancelled(true);
+            	final Material material = block.getType();
+                if(interactDisallowedMaterials.contains(material)) {
+                    event.setCancelled(true);
                 }
             }
         }
-        else if(playerInteractEventAction == Action.RIGHT_CLICK_BLOCK) {
+        else if(action == Action.RIGHT_CLICK_BLOCK) {
             
-            if(interactingPlayer.getGameMode() == GameMode.SPECTATOR) {
+            if(player.getGameMode() == GameMode.SPECTATOR) {
                 return;
             }
             
-            if(interactingPlayer.isSneaking()) {
+            if(player.isSneaking()) {
                 
-                PlayerInventory interactingPlayerInventory = interactingPlayer.getInventory();
-                ItemStack itemInMainHand = interactingPlayerInventory.getItemInMainHand();
-                ItemStack itemInOffHand = interactingPlayerInventory.getItemInOffHand();
-                if(itemInMainHand != null) {
+            	final PlayerInventory playerInventory = player.getInventory();
+            	final ItemStack mainHandItemStack = playerInventory.getItemInMainHand();
+            	final ItemStack offHandItemStack = playerInventory.getItemInOffHand();
+            	
+                if(mainHandItemStack != null) {
                     
-                    Material itemInMainHandMaterial = itemInMainHand.getType();
-                    if(itemInMainHandMaterial.isBlock() && itemInMainHandMaterial != Material.AIR) {
+                	final Material mainHandMaterial = mainHandItemStack.getType();
+                    if(mainHandMaterial.isBlock() && mainHandMaterial != Material.AIR) {
                         return;
                     }
                 }
-                else if(itemInOffHand != null) {
+                else if(offHandItemStack != null) {
                     
-                    Material itemInOffHandMaterial = itemInOffHand.getType();
-                    if(itemInOffHandMaterial.isBlock() && itemInOffHandMaterial != Material.AIR) {
+                	final Material offHandMaterial = offHandItemStack.getType();
+                    if(offHandMaterial.isBlock() && offHandMaterial != Material.AIR) {
                         return;
                     }
                 }
             }
             
-            if(clickedBlock == null) {
+            if(block == null) {
                 return;
             }
             
-            Material clickedBlockMaterial = clickedBlock.getType();
-            if(clickedBlockMaterial == Material.ENDER_CHEST) {
-                playerInteractEvent.setCancelled(true);
-                interactingPlayer.openInventory(interactingPlayer.getEnderChest());
+            final Material blockMaterial = block.getType();
+            
+            if(blockMaterial == Material.ENDER_CHEST) {
+                event.setCancelled(true);
+                player.openInventory(player.getEnderChest());
                 return;
             }
             
-            if(!silentlyViewableMaterials.contains(clickedBlockMaterial)) {
+            if(!silentlyViewableMaterials.contains(blockMaterial)) {
                 return;
             }
             
-            PlayerState interactingPlayerState = PlayerState.getPlayerState(interactingPlayer);
-            playerStateInformation.put(interactingPlayerId, interactingPlayerState);
-            interactingPlayer.setGameMode(GameMode.SPECTATOR);
+            final PlayerState playerState = PlayerState.getPlayerState(player);
+            playerStateInformation.put(playerId, playerState);
+            player.setGameMode(GameMode.SPECTATOR);
         }
     }
     
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerJoinEvent(PlayerJoinEvent playerJoinEvent) {
+    public void onPlayerJoin(final PlayerJoinEvent event) {
         
-        playerJoinEvent.setJoinMessage(null);
+        event.setJoinMessage(null);
         
-        Player joiningPlayer = playerJoinEvent.getPlayer();
-        UUID joiningPlayerId = joiningPlayer.getUniqueId();
-        if(vanishPlugin.isPlayerVanished(joiningPlayerId)) {
-            vanishPlugin.vanishPlayer(joiningPlayerId);
+        final Player player = event.getPlayer();
+        final UUID playerId = player.getUniqueId();
+        
+        if(vanishPlugin.isVanishEnabled(playerId)) {
+            vanishPlugin.enableVanish(playerId);
         }
         
-        PotionEffect nightVisionPotionEffect = new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 1);
-        joiningPlayer.addPotionEffect(nightVisionPotionEffect);
+        final PotionEffect nightVisionPotionEffect = new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 1);
+        player.addPotionEffect(nightVisionPotionEffect);
         
-        if(joiningPlayer.hasPermission("cvvanish.vanish.view")) {
+        if(player.hasPermission("cvvanish.vanish.view")) {
             return;
         }
         
-        Collection<? extends Player> allOnlinePlayers = (Collection<? extends Player>) vanishPlugin.getServer().getOnlinePlayers();
-        for(Player onlinePlayer : allOnlinePlayers) {
+        for(final Player onlinePlayer : (Collection<? extends Player>) vanishPlugin.getServer().getOnlinePlayers()) {
             
-            UUID onlinePlayerId = onlinePlayer.getUniqueId();
+        	final UUID onlinePlayerId = onlinePlayer.getUniqueId();
             
-            if(onlinePlayerId.equals(joiningPlayerId)) {
+            if(onlinePlayerId.equals(playerId)) {
                 continue;
             }
             
-            if(vanishPlugin.isPlayerVanished(onlinePlayerId)) {
-                joiningPlayer.hidePlayer(vanishPlugin, onlinePlayer);
+            if(vanishPlugin.isVanishEnabled(onlinePlayerId)) {
+                player.hidePlayer(vanishPlugin, onlinePlayer);
             }
         }
     }
     
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerLoginEvent(PlayerLoginEvent playerLoginEvent) {
+    public void onPlayerLogin(final PlayerLoginEvent event) {
         
         //TODO: Does this have to go under onPlayerJoinEvent() ?
         
-        Player loginPlayer = playerLoginEvent.getPlayer();
-        UUID loginPlayerId = loginPlayer.getUniqueId();
+    	final Player player = event.getPlayer();
+    	final UUID playerId = player.getUniqueId();
         
-        if(vanishPlugin.isPlayerVanished(loginPlayerId)) {
-            vanishPlugin.vanishPlayer(loginPlayerId);
+        if(vanishPlugin.isVanishEnabled(playerId)) {
+            vanishPlugin.enableVanish(playerId);
         }
         
-        if(loginPlayer.hasPermission("cvvanish.vanish.view")) {
+        if(player.hasPermission("cvvanish.vanish.view")) {
             return;
         }
         
-        Collection<? extends Player> allOnlinePlayers = (Collection<? extends Player>) vanishPlugin.getServer().getOnlinePlayers();
-        for(Player onlinePlayer : allOnlinePlayers) {
+        for(final Player onlinePlayer : (Collection<? extends Player>) vanishPlugin.getServer().getOnlinePlayers()) {
             
-            UUID onlinePlayerId = onlinePlayer.getUniqueId();
+        	final UUID onlinePlayerId = onlinePlayer.getUniqueId();
             
-            if(onlinePlayerId.equals(loginPlayerId)) {
+            if(onlinePlayerId.equals(playerId)) {
                 continue;
             }
             
-            if(vanishPlugin.isPlayerVanished(onlinePlayerId)) {
-                loginPlayer.hidePlayer(vanishPlugin, onlinePlayer);
+            if(vanishPlugin.isVanishEnabled(onlinePlayerId)) {
+                player.hidePlayer(vanishPlugin, onlinePlayer);
             }
         }
     }
     
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onPlayerMoveEvent(PlayerMoveEvent playerMoveEvent) {
+    public void onPlayerMove(final PlayerMoveEvent event) {
         
-        Player movingPlayer = playerMoveEvent.getPlayer();
-        UUID movingPlayerId = movingPlayer.getUniqueId();
+    	final Player player = event.getPlayer();
+    	final UUID playerId = player.getUniqueId();
         
-        if(playerStateInformation.containsKey(movingPlayerId)) {
-            if(!silentlyViewableInventoryTypes.contains(movingPlayer.getOpenInventory().getType())) {
+        if(playerStateInformation.containsKey(playerId)) {
+        	
+            if(!silentlyViewableInventoryTypes.contains(player.getOpenInventory().getType())) {
                 
-                playerStateInformation.get(movingPlayerId).setPlayerState(movingPlayer);
-                playerStateInformation.remove(movingPlayerId);
+                playerStateInformation.get(playerId).setPlayerState(player);
+                playerStateInformation.remove(playerId);
             }
         }
     }
     
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerPickupItemEvent(PlayerPickupItemEvent playerPickupItemEvent) {
+    public void onPlayerPickupItem(final PlayerPickupItemEvent event) {
         
-        UUID pickingUpPlayerId = playerPickupItemEvent.getPlayer().getUniqueId();
-        if(!vanishPlugin.isPlayerVanished(pickingUpPlayerId)) {
+    	final UUID playerId = event.getPlayer().getUniqueId();
+    	
+        if(!vanishPlugin.isVanishEnabled(playerId)) {
             return;
         }
         
-        if(vanishPlugin.isPlayerPickupEnabled(pickingUpPlayerId)) {
+        if(vanishPlugin.isPickupEnabled(playerId)) {
             return;
         }
         
-        playerPickupItemEvent.setCancelled(true);
+        event.setCancelled(true);
     }
     
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerQuitEvent(PlayerQuitEvent playerQuitEvent) {
+    public void onPlayerQuitE(final PlayerQuitEvent event) {
         
-        playerQuitEvent.setQuitMessage(null);
+        event.setQuitMessage(null);
         
-        Player quittingPlayer = playerQuitEvent.getPlayer();
-        UUID quittingPlayerId = quittingPlayer.getUniqueId();
+        final Player player = event.getPlayer();
+        final UUID playerId = player.getUniqueId();
         
-        if(playerStateInformation.containsKey(quittingPlayerId)) {
-            playerStateInformation.get(quittingPlayerId).setPlayerState(quittingPlayer);
-            playerStateInformation.remove(quittingPlayerId);
+        if(playerStateInformation.containsKey(playerId)) {
+            playerStateInformation.get(playerId).setPlayerState(player);
+            playerStateInformation.remove(playerId);
         }
     }
     
     @EventHandler(priority = EventPriority.HIGH)
-    public void onPlayerTeleportEvent(PlayerTeleportEvent playerTeleportEvent) {
+    public void onPlayerTeleport(final PlayerTeleportEvent event) {
         
-        UUID teleportingPlayerId = playerTeleportEvent.getPlayer().getUniqueId();
+    	final UUID playerId = event.getPlayer().getUniqueId();
         
-        if(playerStateInformation.containsKey(teleportingPlayerId) && playerTeleportEvent.getCause() == PlayerTeleportEvent.TeleportCause.SPECTATE) {
-            playerTeleportEvent.setCancelled(true);
+        if(playerStateInformation.containsKey(playerId) && event.getCause() == PlayerTeleportEvent.TeleportCause.SPECTATE) {
+            event.setCancelled(true);
         }
     }
     
     //TODO: If a way to avoid arrow contact is found, the EventPriority may change.
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onProjectileHitEvent(ProjectileHitEvent projectileHitEvent) {
+    public void onProjectileHit(final ProjectileHitEvent event) {
         
-        Entity hitEntity = projectileHitEvent.getHitEntity();
-        if(hitEntity == null) {
+    	final Entity entity = event.getHitEntity();
+    	
+        if(entity == null) {
             return;
         }
         
-        if(!(hitEntity instanceof Player)) {
+        if(!(entity instanceof Player)) {
             return;
         }
         
-        UUID hitPlayerId = ((Player) hitEntity).getUniqueId();
-        if(!vanishPlugin.isPlayerVanished(hitPlayerId)) {
+        final UUID playerId = ((Player) entity).getUniqueId();
+        
+        if(!vanishPlugin.isVanishEnabled(playerId)) {
             return;
         }
         

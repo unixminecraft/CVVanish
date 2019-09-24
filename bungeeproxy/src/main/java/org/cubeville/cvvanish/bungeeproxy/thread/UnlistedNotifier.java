@@ -1,3 +1,18 @@
+/*
+ * CVVanish Copyright (C) 2019 Cubeville
+ * 
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU General Public License as published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. If
+ * not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.cubeville.cvvanish.bungeeproxy.thread;
 
 import java.util.HashSet;
@@ -14,43 +29,48 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
 import net.md_5.bungee.api.scheduler.TaskScheduler;
 
-public class UnlistedNotifier implements Runnable {
+public final class UnlistedNotifier implements Runnable {
     
-    private CVVanish vanishPlugin;
+    private final CVVanish vanishPlugin;
+    private final TaskScheduler proxyTaskScheduler;
+    
     private ScheduledTask unlistedNotificationScheduledTask;
-    private TaskScheduler proxyTaskScheduler;
     
-    public UnlistedNotifier(CVVanish vanishPlugin) {
+    public UnlistedNotifier(final CVVanish vanishPlugin) {
         
         this.vanishPlugin = vanishPlugin;
-        this.proxyTaskScheduler = this.vanishPlugin.getProxy().getScheduler();
+        this.proxyTaskScheduler = vanishPlugin.getProxy().getScheduler();
     }
     
     public void start() {
+    	
         unlistedNotificationScheduledTask = proxyTaskScheduler.schedule(vanishPlugin, this, 0, 2, TimeUnit.SECONDS);
     }
     
     public void stop() {
+    	
         proxyTaskScheduler.cancel(unlistedNotificationScheduledTask);
     }
     
     @Override
     public void run() {
         
-        HashSet<UUID> unlistedPlayerIds = vanishPlugin.getUnlistedPlayerIds();
-        ProxyServer bungeeProxy = vanishPlugin.getProxy();
+    	final HashSet<UUID> unlistedPlayerIds = vanishPlugin.getUnlistedPlayerIds();
+    	final ProxyServer bungeeProxy = vanishPlugin.getProxy();
         
-        for(UUID unlistedPlayerId : unlistedPlayerIds) {
+        for(final UUID unlistedPlayerId : unlistedPlayerIds) {
             
-            ProxiedPlayer unlistedPlayer = bungeeProxy.getPlayer(unlistedPlayerId);
+        	final ProxiedPlayer unlistedPlayer = bungeeProxy.getPlayer(unlistedPlayerId);
             if(unlistedPlayer == null) {
-                //TODO: Log error.
+                
                 continue;
             }
             
-            TextComponent youAreLocallyVisible = new TextComponent();
+            final TextComponent youAreLocallyVisible = new TextComponent();
+            
             youAreLocallyVisible.setText("You are able to be seen, but you are not listed in tab.");
             youAreLocallyVisible.setColor(ChatColor.GOLD);
+            
             unlistedPlayer.sendMessage(ChatMessageType.ACTION_BAR, youAreLocallyVisible);
         }
     }

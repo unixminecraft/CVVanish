@@ -1,11 +1,7 @@
 name: CVVanish
 main: org.cubeville.cvvanish.bungeebukkit.CVVanish
 author: unixadmin
-version: 0.1
+version: 2.0
+api-version: 1.14
 
-depend: [CVTools,CVIPC]
-
-permissions:
-  cvvanish.see:
-    description: Ability to see other vanished players.
-    default: op
+depend: [CVIPC]

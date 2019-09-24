@@ -1,5 +1,0 @@
-name: CVVanish
-main: org.cubeville.cvvanish.bungeeproxy.CVVanish
-version: 0.1
-author: ['unixminecraft']
-depends: ['CVTools','CVPlayerData','CVIPC']
