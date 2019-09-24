@@ -25,6 +25,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.Team;
 import org.cubeville.cvipc.bungeebukkit.CVIPC;
 import org.cubeville.cvipc.bungeebukkit.IPCMessage;
@@ -228,6 +229,8 @@ public class CVVanish extends JavaPlugin {
         if(vanishTeam != null) {
             vanishTeam.removeEntry(player.getName());
         }
+        
+        player.removePotionEffect(PotionEffectType.NIGHT_VISION);
         
         return true;
     }
