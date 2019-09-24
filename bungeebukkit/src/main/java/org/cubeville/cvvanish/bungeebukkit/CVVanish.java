@@ -28,11 +28,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.Team;
 import org.cubeville.cvipc.bungeebukkit.CVIPC;
-import org.cubeville.cvipc.bungeebukkit.IPCMessage;
 import org.cubeville.cvipc.bungeebukkit.listener.IPCInterface;
 import org.cubeville.cvvanish.bungeebukkit.listener.EventListener;
 import org.cubeville.cvvanish.bungeebukkit.listener.BukkitIPCInterface;
 import org.cubeville.cvvanish.bungeebukkit.thread.NightVisionEffectIssuer;
+import org.cubeville.cvvanish.bungeebukkit.thread.VanishInitializer;
 
 public class CVVanish extends JavaPlugin {
 	
@@ -111,12 +111,6 @@ public class CVVanish extends JavaPlugin {
         ipcPlugin.registerIPCInterface(CHANNEL_PICKUP_ENABLE, bukkitIPCInterface);
         ipcPlugin.registerIPCInterface(CHANNEL_PICKUP_DISABLE, bukkitIPCInterface);
         
-        final IPCMessage initializationReadyMessage = new IPCMessage("CVVANISH_BUKKIT_READY");
-        
-        initializationReadyMessage.addMessage("cvvanish_bukkit_ready");
-        
-        ipcPlugin.sendIPCMessage(initializationReadyMessage);
-        
         /*
          * Event listener setup
          */
@@ -129,6 +123,9 @@ public class CVVanish extends JavaPlugin {
         
         nightVisionEffectIssuer = new NightVisionEffectIssuer(this);
         nightVisionEffectIssuer.start();
+        
+        VanishInitializer vanishInitializer = new VanishInitializer(this, ipcPlugin);
+        vanishInitializer.start();
     }
     
     @Override
