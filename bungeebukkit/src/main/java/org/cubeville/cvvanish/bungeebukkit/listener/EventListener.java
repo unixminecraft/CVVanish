@@ -21,6 +21,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -35,7 +36,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -43,7 +43,6 @@ import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -303,7 +302,7 @@ public final class EventListener implements Listener {
     
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerInteract(final PlayerInteractEvent event) {
-        
+    	
     	final Player player = event.getPlayer();
     	final UUID playerId = player.getUniqueId();
     	
@@ -320,6 +319,7 @@ public final class EventListener implements Listener {
                 
             	final Material material = block.getType();
                 if(interactDisallowedMaterials.contains(material)) {
+                	
                     event.setCancelled(true);
                 }
             }
@@ -368,6 +368,9 @@ public final class EventListener implements Listener {
                 return;
             }
             
+            Location location = player.getLocation();
+            player.teleport(location.add(0.0D, 0.25D, 0.0D));
+            
             final PlayerState playerState = PlayerState.getPlayerState(player);
             playerStateInformation.put(playerId, playerState);
             player.setGameMode(GameMode.SPECTATOR);
@@ -384,42 +387,13 @@ public final class EventListener implements Listener {
         
         if(vanishPlugin.isVanishEnabled(playerId)) {
             vanishPlugin.enableVanish(playerId);
+            vanishPlugin.onPlayerJoin(playerId);
         }
         
         final PotionEffect nightVisionPotionEffect = new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 1);
         player.addPotionEffect(nightVisionPotionEffect);
         
-        if(player.hasPermission("cvvanish.vanish.view")) {
-            return;
-        }
-        
-        for(final Player onlinePlayer : (Collection<? extends Player>) vanishPlugin.getServer().getOnlinePlayers()) {
-            
-        	final UUID onlinePlayerId = onlinePlayer.getUniqueId();
-            
-            if(onlinePlayerId.equals(playerId)) {
-                continue;
-            }
-            
-            if(vanishPlugin.isVanishEnabled(onlinePlayerId)) {
-                player.hidePlayer(vanishPlugin, onlinePlayer);
-            }
-        }
-    }
-    
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerLogin(final PlayerLoginEvent event) {
-        
-        //TODO: Does this have to go under onPlayerJoinEvent() ?
-        
-    	final Player player = event.getPlayer();
-    	final UUID playerId = player.getUniqueId();
-        
-        if(vanishPlugin.isVanishEnabled(playerId)) {
-            vanishPlugin.enableVanish(playerId);
-        }
-        
-        if(player.hasPermission("cvvanish.vanish.view")) {
+        if(player.hasPermission(CVVanish.INVISIBLE_VIEW_PERMISSION)) {
             return;
         }
         
@@ -470,7 +444,7 @@ public final class EventListener implements Listener {
     }
     
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerQuitE(final PlayerQuitEvent event) {
+    public void onPlayerQuit(final PlayerQuitEvent event) {
         
         event.setQuitMessage(null);
         
@@ -491,29 +465,5 @@ public final class EventListener implements Listener {
         if(playerStateInformation.containsKey(playerId) && event.getCause() == PlayerTeleportEvent.TeleportCause.SPECTATE) {
             event.setCancelled(true);
         }
-    }
-    
-    //TODO: If a way to avoid arrow contact is found, the EventPriority may change.
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onProjectileHit(final ProjectileHitEvent event) {
-        
-    	final Entity entity = event.getHitEntity();
-    	
-        if(entity == null) {
-            return;
-        }
-        
-        if(!(entity instanceof Player)) {
-            return;
-        }
-        
-        final UUID playerId = ((Player) entity).getUniqueId();
-        
-        if(!vanishPlugin.isVanishEnabled(playerId)) {
-            return;
-        }
-        
-        //TODO: No .setCancelled() method exists.
-        //projectileHitEvent.setCancelled(true);
     }
 }

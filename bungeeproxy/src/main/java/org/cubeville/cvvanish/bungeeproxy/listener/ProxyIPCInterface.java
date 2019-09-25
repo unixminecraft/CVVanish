@@ -40,9 +40,12 @@ public final class ProxyIPCInterface implements IPCInterface {
     	final String channel = ipcMessage.getChannel();
     	
         if(channel.equals(CVVanish.CHANNEL_CVVANISH_BUKKIT_READY)) {
-            
+        	
         	final String serverName = ipcMessage.getServerName();
         	final List<String> messages = ipcMessage.getMessages();
+        	
+        	logger.log(Level.INFO, "Vanish Bukkit initialize query received for server " + serverName + ".");
+        	logger.log(Level.INFO, "IPCMessage data: " + ipcMessage.toString());
         	
             if(messages.size() != 1) {
                 

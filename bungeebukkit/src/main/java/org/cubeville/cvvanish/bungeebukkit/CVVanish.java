@@ -44,6 +44,8 @@ public class CVVanish extends JavaPlugin {
 	public static final String CHANNEL_PICKUP_ENABLE = "PICKUP_ENABLE";
 	public static final String CHANNEL_PICKUP_DISABLE = "PICKUP_DISABLE";
 	
+	public static final String INVISIBLE_VIEW_PERMISSION = "cvvanish.invisible.view";
+	
     private static final String VANISHED_TEAM_NAME = "VanishedTeam";
     
     private Logger logger;
@@ -142,6 +144,40 @@ public class CVVanish extends JavaPlugin {
         ipcPlugin.deregisterIPCInterface(CHANNEL_VANISH_INITIALIZE);
     }
     
+    public boolean onPlayerJoin(UUID playerId) {
+    	
+        final Player player = getServer().getPlayer(playerId);
+        if(player == null) {
+            return false;
+        }
+        
+        for(final Player onlinePlayer : (Collection<? extends Player>) getServer().getOnlinePlayers()) {
+            
+            if(onlinePlayer.getUniqueId().equals(playerId)) {
+                continue;
+            }
+            if(onlinePlayer.hasPermission(INVISIBLE_VIEW_PERMISSION)) {
+                continue;
+            }
+            onlinePlayer.hidePlayer(this, player);
+        }
+        
+        //TODO: Check to make sure the invisible person doesn't push the visible
+        //      people, and not the other way around (invisible pushes visible).
+        player.setCollidable(false);
+        
+        Team vanishTeam = player.getScoreboard().getTeam(VANISHED_TEAM_NAME);
+        if(vanishTeam == null) {
+        	
+            vanishTeam = player.getScoreboard().registerNewTeam(VANISHED_TEAM_NAME);
+        }
+        
+        vanishTeam.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
+        vanishTeam.addEntry(player.getName());
+        
+        return true;
+    }
+    
     public HashSet<UUID> getVanishedPlayerIds() {
     	
         return vanishedPlayerIds;
@@ -158,41 +194,11 @@ public class CVVanish extends JavaPlugin {
             return false;
         }
         
-        final Player player = getServer().getPlayer(playerId);
-        if(player == null) {
-            return false;
-        }
-        
         if(isVanishEnabled(playerId)) {
             return false;
         }
         
-        vanishedPlayerIds.add(playerId);
-        
-        for(final Player onlinePlayer : (Collection<? extends Player>) getServer().getOnlinePlayers()) {
-            
-            if(onlinePlayer.getUniqueId().equals(playerId)) {
-                continue;
-            }
-            if(onlinePlayer.hasPermission("cvvanish.vanish.view")) {
-                continue;
-            }
-            onlinePlayer.hidePlayer(this, player);
-        }
-        
-        //TODO: Check to make sure the invisible person doesn't push the visible
-        //      people, and not the other way around (invisible pushes visible).
-        player.setCollidable(false);
-        
-        Team vanishTeam = player.getScoreboard().getTeam(VANISHED_TEAM_NAME);
-        if(vanishTeam == null) {
-            vanishTeam = player.getScoreboard().registerNewTeam(VANISHED_TEAM_NAME);
-        }
-        
-        vanishTeam.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
-        vanishTeam.addEntry(player.getName());
-        
-        return true;
+        return vanishedPlayerIds.add(playerId);
     }
     
     public boolean disableVanish(final UUID playerId) {
@@ -201,16 +207,16 @@ public class CVVanish extends JavaPlugin {
             return false;
         }
         
-        final Player player = getServer().getPlayer(playerId);
-        if(player == null) {
-            return false;
-        }
-        
         if(!isVanishEnabled(playerId)) {
             return false;
         }
         
         vanishedPlayerIds.remove(playerId);
+        
+        final Player player = getServer().getPlayer(playerId);
+        if(player == null) {
+            return true;
+        }
         
         for(final Player onlinePlayer : (Collection<? extends Player>) getServer().getOnlinePlayers()) {
             

@@ -48,12 +48,13 @@ public final class VanishInitializer implements Runnable {
 			// Do nothing.
 		}
 		
-        final IPCMessage initializationReadyMessage = new IPCMessage("CVVANISH_BUKKIT_READY");
+        final IPCMessage ipcMessage = new IPCMessage("CVVANISH_BUKKIT_READY");
         
-        initializationReadyMessage.addMessage("cvvanish_bukkit_ready");
+        ipcMessage.addMessage("cvvanish_bukkit_ready");
         
-        ipcPlugin.sendIPCMessage(initializationReadyMessage);
+        ipcPlugin.sendIPCMessage(ipcMessage);
         
-        logger.log(Level.INFO, "Vanish Bukkit initialization message sent.");
+        logger.log(Level.INFO, "Vanish Bukkit initialization query sent.");
+        logger.log(Level.INFO, "IPCMessage data: " + ipcMessage.toString());
 	}
 }

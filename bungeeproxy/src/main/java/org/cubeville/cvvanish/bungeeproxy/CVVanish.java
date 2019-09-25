@@ -27,7 +27,6 @@ import org.cubeville.common.bungeecord.command.BaseCommand;
 import org.cubeville.cvipc.bungeeproxy.CVIPC;
 import org.cubeville.cvipc.bungeeproxy.IPCMessage;
 import org.cubeville.cvipc.bungeeproxy.listener.IPCInterface;
-import org.cubeville.cvplayerdata.bungeeproxy.CVPlayerData;
 import org.cubeville.cvtools.bungeecord.CVTools;
 import org.cubeville.cvvanish.bungeeproxy.command.FakeJoinCommand;
 import org.cubeville.cvvanish.bungeeproxy.command.FakeQuitCommand;
@@ -46,6 +45,7 @@ import org.cubeville.cvvanish.bungeeproxy.thread.HiddenNotifier;
 import org.cubeville.cvvanish.bungeeproxy.thread.UnlistedNotifier;
 import org.cubeville.cvvanish.bungeeproxy.thread.VanishedNotifier;
 
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
 import net.md_5.bungee.config.Configuration;
@@ -91,6 +91,10 @@ public final class CVVanish extends Plugin {
     
     public static final String CHANNEL_CVVANISH_BUKKIT_READY = "CVVANISH_BUKKIT_READY";
     
+    private static final String SILENT_JOIN_PERMISSION = "cvvanish.silent.join";
+    private static final String SILENT_LEAVE_PERMISSION = "cvvanish.silent.leave";
+    private static final String SILENT_NOTIFY_PERMISSION = "cvvanish.silent.notify";
+    
     private static final String DEFAULT_STRING = "8SvDtQVF7q1Ycu3j6OsBL1Wcva8daYAO";
     
     private static final String HIDDEN_DIRECTORY_NAME = "Hidden";
@@ -119,7 +123,6 @@ public final class CVVanish extends Plugin {
     private HashSet<UUID> pickupPlayerIds;
     
     private CVIPC ipcPlugin;
-    private CVPlayerData playerDataPlugin;
     
     private HiddenNotifier hiddenNotifier;
     private UnlistedNotifier unlistedNotifier;
@@ -436,20 +439,6 @@ public final class CVVanish extends Plugin {
     	
     	ipcPlugin = (CVIPC) possibleIPCPlugin;
     	
-    	final Plugin possiblePlayerDataPlugin = pluginManager.getPlugin("CVPlayerData");
-    	if(possiblePlayerDataPlugin == null) {
-    		
-    		logger.log(Level.SEVERE, "CVPlayerData not found, cannot start CVVanish.");
-    		throw new RuntimeException("CVPlayerData not found, cannot start CVVanish.");
-    	}
-    	if(!(possiblePlayerDataPlugin instanceof CVPlayerData)) {
-    		
-    		logger.log(Level.SEVERE, "CVPlayerData not correct plugin type, cannot start CVVanish.");
-    		throw new RuntimeException("CVPlayerData not correct plugin type, cannot start CVVanish.");
-    	}
-    	
-    	playerDataPlugin = (CVPlayerData) possiblePlayerDataPlugin;
-    	
     	/*
     	 * Command setup
     	 */
@@ -490,7 +479,7 @@ public final class CVVanish extends Plugin {
     	 * Listener setup
     	 */
     	
-    	pluginManager.registerListener(this, new EventListener(this, playerDataPlugin));
+    	pluginManager.registerListener(this, new EventListener(this));
     	
     	/*
     	 * Thread setup
@@ -565,6 +554,26 @@ public final class CVVanish extends Plugin {
         
         ipcPlugin.sendIPCMessage(vanishIPCMessage);
         ipcPlugin.sendIPCMessage(pickupIPCMessage);
+        
+        logger.log(Level.INFO, "Vanish initialization response sent to server " + serverName + ".");
+        logger.log(Level.INFO, "Vanish IPCMessage data: " + vanishIPCMessage.toString());
+        logger.log(Level.INFO, "Pickup initialization response sent to server " + serverName + ".");
+        logger.log(Level.INFO, "Pickup IPCMessage data: " + pickupIPCMessage.toString());
+    }
+    
+    public boolean canJoinSilent(ProxiedPlayer player) {
+    	
+    	return player.hasPermission(SILENT_JOIN_PERMISSION);
+    }
+    
+    public boolean canLeaveSilent(ProxiedPlayer player) {
+    	
+    	return player.hasPermission(SILENT_LEAVE_PERMISSION);
+    }
+    
+    public boolean canNotifySilent(ProxiedPlayer player) {
+    	
+    	return player.hasPermission(SILENT_NOTIFY_PERMISSION);
     }
     
     public HashSet<UUID> getUnlistedPlayerIds() {

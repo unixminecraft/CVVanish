@@ -3,4 +3,4 @@ main: org.cubeville.cvvanish.bungeeproxy.CVVanish
 version: 2.0
 author: unixminecraft
 
-depends: [CVTools,CVPlayerData,CVIPC]
+depends: [CVTools,CVIPC]
