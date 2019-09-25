@@ -67,7 +67,7 @@ public final class NightVisionEffectIssuer implements Runnable {
                 continue;
             }
             
-            final PotionEffect nightVisionPotionEffect = new PotionEffect(PotionEffectType.NIGHT_VISION, 2400, 1);
+            final PotionEffect nightVisionPotionEffect = new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 1);
             hiddenPlayer.removePotionEffect(PotionEffectType.NIGHT_VISION);
             hiddenPlayer.addPotionEffect(nightVisionPotionEffect);
         }

@@ -144,7 +144,7 @@ public class CVVanish extends JavaPlugin {
         ipcPlugin.deregisterIPCInterface(CHANNEL_VANISH_INITIALIZE);
     }
     
-    public boolean onPlayerJoin(UUID playerId) {
+    public boolean disappear(UUID playerId) {
     	
         final Player player = getServer().getPlayer(playerId);
         if(player == null) {

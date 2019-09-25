@@ -368,12 +368,13 @@ public final class EventListener implements Listener {
                 return;
             }
             
-            Location location = player.getLocation();
-            player.teleport(location.add(0.0D, 0.25D, 0.0D));
+            final Location location = player.getLocation();
             
             final PlayerState playerState = PlayerState.getPlayerState(player);
             playerStateInformation.put(playerId, playerState);
             player.setGameMode(GameMode.SPECTATOR);
+            
+            player.teleport(location.add(0.0D, 0.25D, 0.0D));
         }
     }
     
@@ -386,12 +387,13 @@ public final class EventListener implements Listener {
         final UUID playerId = player.getUniqueId();
         
         if(vanishPlugin.isVanishEnabled(playerId)) {
+        	
             vanishPlugin.enableVanish(playerId);
-            vanishPlugin.onPlayerJoin(playerId);
+            vanishPlugin.disappear(playerId);
+            
+            final PotionEffect nightVisionPotionEffect = new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 1);
+            player.addPotionEffect(nightVisionPotionEffect);
         }
-        
-        final PotionEffect nightVisionPotionEffect = new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 1);
-        player.addPotionEffect(nightVisionPotionEffect);
         
         if(player.hasPermission(CVVanish.INVISIBLE_VIEW_PERMISSION)) {
             return;

@@ -83,6 +83,7 @@ public final class BukkitIPCInterface implements IPCInterface {
         	}
         	
         	vanishPlugin.enableVanish(UUID.fromString(playerIdValue));
+        	vanishPlugin.disappear(UUID.fromString(playerIdValue));
         }
         else if(channel.equals(CVVanish.CHANNEL_VANISH_DISABLE)) {
         	
@@ -167,7 +168,7 @@ public final class BukkitIPCInterface implements IPCInterface {
         		return;
         	}
         	
-        	vanishPlugin.disableVanish(UUID.fromString(playerIdValue));
+        	vanishPlugin.disablePickup(UUID.fromString(playerIdValue));
         }
         else {
         	
