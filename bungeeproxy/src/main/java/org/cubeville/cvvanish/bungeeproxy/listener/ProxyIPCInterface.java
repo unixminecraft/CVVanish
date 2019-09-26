@@ -44,9 +44,6 @@ public final class ProxyIPCInterface implements IPCInterface {
         	final String serverName = ipcMessage.getServerName();
         	final List<String> messages = ipcMessage.getMessages();
         	
-        	logger.log(Level.INFO, "Vanish Bukkit initialize query received for server " + serverName + ".");
-        	logger.log(Level.INFO, "IPCMessage data: " + ipcMessage.toString());
-        	
             if(messages.size() != 1) {
                 
             	logger.log(Level.INFO, "Bukkit server vanish initialization for server " + serverName + " does not have the correct amount of data.");

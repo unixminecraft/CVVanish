@@ -45,9 +45,6 @@ public final class BukkitIPCInterface implements IPCInterface {
         
         if(channel.equals(CVVanish.CHANNEL_VANISH_INITIALIZE)) {
         	
-        	logger.log(Level.INFO, "Vanish initialize response received.");
-        	logger.log(Level.INFO, "Vanish IPCMessage data: " + ipcMessage.toString());
-        	
         	for(final String message : messages) {
         		
         		try {

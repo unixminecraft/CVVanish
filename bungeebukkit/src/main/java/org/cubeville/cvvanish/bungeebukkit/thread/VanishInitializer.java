@@ -1,8 +1,5 @@
 package org.cubeville.cvvanish.bungeebukkit.thread;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.cubeville.cvipc.bungeebukkit.CVIPC;
 import org.cubeville.cvipc.bungeebukkit.IPCMessage;
 import org.cubeville.cvvanish.bungeebukkit.CVVanish;
@@ -12,21 +9,15 @@ public final class VanishInitializer implements Runnable {
 	private final CVVanish vanishPlugin;
 	private final CVIPC ipcPlugin;
 	
-	private final Logger logger;
-	
 	public VanishInitializer(final CVVanish vanishPlugin, final CVIPC ipcPlugin) {
 		
 		this.vanishPlugin = vanishPlugin;
 		this.ipcPlugin = ipcPlugin;
-		
-		this.logger = vanishPlugin.getLogger();
 	}
 	
 	public void start() {
 		
 		vanishPlugin.getServer().getScheduler().runTaskAsynchronously(vanishPlugin, this);
-		
-		logger.log(Level.INFO, "Vanish Bukkit initialization scheduled.");
 	}
 	
 	@Override
@@ -53,8 +44,5 @@ public final class VanishInitializer implements Runnable {
         ipcMessage.addMessage("cvvanish_bukkit_ready");
         
         ipcPlugin.sendIPCMessage(ipcMessage);
-        
-        logger.log(Level.INFO, "Vanish Bukkit initialization query sent.");
-        logger.log(Level.INFO, "IPCMessage data: " + ipcMessage.toString());
 	}
 }

@@ -554,11 +554,6 @@ public final class CVVanish extends Plugin {
         
         ipcPlugin.sendIPCMessage(vanishIPCMessage);
         ipcPlugin.sendIPCMessage(pickupIPCMessage);
-        
-        logger.log(Level.INFO, "Vanish initialization response sent to server " + serverName + ".");
-        logger.log(Level.INFO, "Vanish IPCMessage data: " + vanishIPCMessage.toString());
-        logger.log(Level.INFO, "Pickup initialization response sent to server " + serverName + ".");
-        logger.log(Level.INFO, "Pickup IPCMessage data: " + pickupIPCMessage.toString());
     }
     
     public boolean canJoinSilent(ProxiedPlayer player) {
