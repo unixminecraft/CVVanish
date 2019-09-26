@@ -32,7 +32,7 @@ public final class VanishInitializer implements Runnable {
 	
 	public void start() {
 		
-		vanishPlugin.getServer().getScheduler().runTaskAsynchronously(vanishPlugin, this);
+		vanishPlugin.getServer().getScheduler().scheduleSyncDelayedTask(vanishPlugin, this);
 	}
 	
 	@Override
