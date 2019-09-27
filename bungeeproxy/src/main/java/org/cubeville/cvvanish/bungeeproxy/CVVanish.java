@@ -24,6 +24,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.cubeville.common.bungeecord.command.BaseCommand;
+import org.cubeville.common.bungeecord.command.SubBaseCommand;
 import org.cubeville.cvipc.bungeeproxy.CVIPC;
 import org.cubeville.cvipc.bungeeproxy.IPCMessage;
 import org.cubeville.cvipc.bungeeproxy.listener.IPCInterface;
@@ -39,6 +40,8 @@ import org.cubeville.cvvanish.bungeeproxy.command.TabOffCommand;
 import org.cubeville.cvvanish.bungeeproxy.command.TabOnCommand;
 import org.cubeville.cvvanish.bungeeproxy.command.VisibilityOffCommand;
 import org.cubeville.cvvanish.bungeeproxy.command.VisibilityOnCommand;
+import org.cubeville.cvvanish.bungeeproxy.command.pickup.PickupOffCommand;
+import org.cubeville.cvvanish.bungeeproxy.command.pickup.PickupOnCommand;
 import org.cubeville.cvvanish.bungeeproxy.listener.EventListener;
 import org.cubeville.cvvanish.bungeeproxy.listener.ProxyIPCInterface;
 import org.cubeville.cvvanish.bungeeproxy.thread.HiddenNotifier;
@@ -454,6 +457,12 @@ public final class CVVanish extends Plugin {
     	final BaseCommand tabOnCommand = new TabOnCommand(this);
     	final BaseCommand visibilityOffCommand = new VisibilityOffCommand(this);
     	final BaseCommand visibilityOnCommand = new VisibilityOnCommand(this);
+    	
+    	final SubBaseCommand pickupOffCommand = new PickupOffCommand(this);
+    	final SubBaseCommand pickupOnCommand = new PickupOnCommand(this);
+    	
+    	pickupCommand.addSubCommand(pickupOffCommand);
+    	pickupCommand.addSubCommand(pickupOnCommand);
     	
     	pluginManager.registerCommand(this, fakeJoinCommand);
     	pluginManager.registerCommand(this, fakeQuitCommand);

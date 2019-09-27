@@ -45,7 +45,7 @@ public final class HideCommand extends PlayerCommand {
     
     public HideCommand(final CVVanish vanishPlugin) {
     	
-    	super("hide", USE_PERMISSION, convertSyntax(SYNTAX));
+    	super("hide", USE_PERMISSION, convertText(SYNTAX));
     	
     	addFlag("fq");
     	

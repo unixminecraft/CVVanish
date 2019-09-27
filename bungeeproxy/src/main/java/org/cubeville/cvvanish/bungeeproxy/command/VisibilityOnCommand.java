@@ -45,7 +45,7 @@ public final class VisibilityOnCommand extends PlayerCommand {
     
     public VisibilityOnCommand(final CVVanish vanishPlugin) {
         
-    	super("von", USE_PERMISSION, convertSyntax(SYNTAX));
+    	super("von", USE_PERMISSION, convertText(SYNTAX));
     	
     	this.vanishPlugin = vanishPlugin;
     	

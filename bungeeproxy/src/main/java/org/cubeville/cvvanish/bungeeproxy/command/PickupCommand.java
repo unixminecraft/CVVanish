@@ -41,10 +41,7 @@ public final class PickupCommand extends PlayerCommand {
     
     public PickupCommand(final CVVanish vanishPlugin) {
         
-    	super("vpickup", USE_PERMISSION, convertSyntax(SYNTAX));
-    	
-    	addFlag("on");
-    	addFlag("off");
+    	super("vpickup", USE_PERMISSION, convertText(SYNTAX));
     	
     	this.vanishPlugin = vanishPlugin;
     	
@@ -59,129 +56,46 @@ public final class PickupCommand extends PlayerCommand {
     	
     	final UUID playerId = player.getUniqueId();
     	final boolean pickupEnabled = vanishPlugin.isPickupEnabled(playerId);
+            
+    	final TextComponent pickingUpItems = new TextComponent();
+    	final TextComponent pickupStatusValue = new TextComponent();
+    	final TextComponent period = new TextComponent();
+    	final TextComponent toTurnIt = new TextComponent();
+    	final TextComponent toggleValue = new TextComponent();
+    	final TextComponent use = new TextComponent();
+    	final TextComponent toggleCommandValue = new TextComponent();
         
-        if(flags.size() == 0) {
+        pickingUpItems.setText("Picking up items is currently ");
+        period.setText(".");
+        toTurnIt.setText("To turn it ");
+        use.setText(", use ");
+        
+        pickingUpItems.setColor(ChatColor.YELLOW);
+        period.setColor(ChatColor.YELLOW);
+        toTurnIt.setColor(ChatColor.YELLOW);
+        use.setColor(ChatColor.YELLOW);
+        toggleCommandValue.setColor(ChatColor.AQUA);
+        
+        if(pickupEnabled) {
             
-        	final TextComponent pickingUpItems = new TextComponent();
-        	final TextComponent pickupStatusValue = new TextComponent();
-        	final TextComponent period = new TextComponent();
-        	final TextComponent toTurnIt = new TextComponent();
-        	final TextComponent toggleValue = new TextComponent();
-        	final TextComponent use = new TextComponent();
-        	final TextComponent toggleCommandValue = new TextComponent();
+            pickupStatusValue.setText("ENABLED");
+            toggleValue.setText("off");
+            toggleCommandValue.setText("/vpickup off");
             
-            pickingUpItems.setText("Picking up items is currently ");
-            period.setText(".");
-            toTurnIt.setText("To turn it ");
-            use.setText(", use ");
-            
-            pickingUpItems.setColor(ChatColor.YELLOW);
-            period.setColor(ChatColor.YELLOW);
-            toTurnIt.setColor(ChatColor.YELLOW);
-            use.setColor(ChatColor.YELLOW);
-            toggleCommandValue.setColor(ChatColor.AQUA);
-            
-            if(pickupEnabled) {
-                
-                pickupStatusValue.setText("ENABLED");
-                toggleValue.setText("off");
-                toggleCommandValue.setText("/vpickup off");
-                
-                pickupStatusValue.setColor(ChatColor.GREEN);
-                toggleValue.setColor(ChatColor.RED);
-            }
-            else {
-                
-                pickupStatusValue.setText("DISABLED");
-                toggleValue.setText("on");
-                toggleCommandValue.setText("/vpickup on");
-                
-                pickupStatusValue.setColor(ChatColor.RED);
-                toggleValue.setColor(ChatColor.GREEN);
-            }
-            
-            player.sendMessage(pickingUpItems, pickupStatusValue, period);
-            player.sendMessage(toTurnIt, toggleValue, use, toggleCommandValue, period);
-        }
-        else if(flags.size() == 1) {
-            
-            if(flags.contains("on")) {
-            	
-                if(pickupEnabled) {
-                    
-                	final TextComponent pickupAlreadyEnabled = new TextComponent();
-                	
-                    pickupAlreadyEnabled.setText("You already have item pickup enabled, you can't enable it more.");
-                    pickupAlreadyEnabled.setColor(ChatColor.RED);
-                    
-                    player.sendMessage(pickupAlreadyEnabled);
-                    return;
-                }
-                
-                if(!vanishPlugin.enablePickup(playerId)) {
-                    
-                    logger.log(Level.INFO, "Attempted to enable pickup for player " + player.getName() + " (UUID: " + playerId.toString() + "), but they already had pickup enabled, even after checking to make sure they did not have pickup enabled.");
-                    
-                    player.sendMessage(getInternalError());
-                    return;
-                }
-                
-                final TextComponent itemPickupEnabled = new TextComponent();
-                
-                itemPickupEnabled.setText("Item pickup enabled.");
-                itemPickupEnabled.setColor(ChatColor.GREEN);
-                
-                player.sendMessage(itemPickupEnabled);
-            }
-            else if(flags.contains("off")) {
-            	
-                if(!pickupEnabled) {
-                    
-                	final TextComponent pickupAlreadyDisabled = new TextComponent();
-                    
-                    pickupAlreadyDisabled.setText("You don't have item pickup enabled, disabling more would probably cause you to drop your items.");
-                    pickupAlreadyDisabled.setColor(ChatColor.RED);
-                    
-                    player.sendMessage(pickupAlreadyDisabled);
-                    return;
-                }
-                
-                if(!vanishPlugin.disablePickup(playerId)) {
-                    
-                    logger.log(Level.INFO, "Attempted to disable pickup for player " + player.getName() + " (UUID: " + playerId.toString() + "), but they already had pickup disabled, even after checking to make sure they did not have pickup disabled.");
-                    
-                    player.sendMessage(getInternalError());
-                    return;
-                }
-                
-                final TextComponent itemPickupDisabled = new TextComponent();
-                
-                itemPickupDisabled.setText("Item pickup disabled.");
-                itemPickupDisabled.setColor(ChatColor.GREEN);
-                
-                player.sendMessage(itemPickupDisabled);
-            }
-            else {
-                
-                logger.log(Level.INFO, "Player " + player.getName() + " (UUID: " + playerId.toString() + ") managed to use only 1 flag that isn't \"off\" or \"on\" while using the vpickup command.");
-                logger.log(Level.INFO, "The flag was: " + flags.iterator().next());
-                
-                final TextComponent unlikelyErrorOccurred = new TextComponent();
-                
-                unlikelyErrorOccurred.setText("An unlikely error has occurred. Please report this to a server administrator so they can look into it.");
-                unlikelyErrorOccurred.setColor(ChatColor.RED);
-                
-                player.sendMessage(unlikelyErrorOccurred);
-            }
+            pickupStatusValue.setColor(ChatColor.GREEN);
+            toggleValue.setColor(ChatColor.RED);
         }
         else {
             
-        	final TextComponent pleaseOnlyUseOne = new TextComponent();
+            pickupStatusValue.setText("DISABLED");
+            toggleValue.setText("on");
+            toggleCommandValue.setText("/vpickup on");
             
-            pleaseOnlyUseOne.setText("Please only use 1 of the following with this command: [on|off]");
-            pleaseOnlyUseOne.setColor(ChatColor.RED);
-            
-            player.sendMessage(pleaseOnlyUseOne);
+            pickupStatusValue.setColor(ChatColor.RED);
+            toggleValue.setColor(ChatColor.GREEN);
         }
+        
+        player.sendMessage(pickingUpItems, pickupStatusValue, period);
+        player.sendMessage(toTurnIt, toggleValue, use, toggleCommandValue, period);
     }
 }

@@ -41,7 +41,7 @@ public final class FakeJoinCommand extends PlayerCommand {
     
     public FakeJoinCommand(final CVVanish vanishPlugin) {
         
-    	super("fj", USE_PERMISSION, convertSyntax(SYNTAX));
+    	super("fj", USE_PERMISSION, convertText(SYNTAX));
     	
     	this.vanishPlugin = vanishPlugin;
     	

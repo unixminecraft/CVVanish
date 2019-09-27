@@ -38,7 +38,7 @@ public class LegacyVCommand extends PlayerCommand {
     
     public LegacyVCommand(final CVVanish vanishPlugin) {
         
-    	super("v", USE_PERMISSION, convertSyntax(SYNTAX));
+    	super("v", USE_PERMISSION, convertText(SYNTAX));
     	
     	this.logger = vanishPlugin.getLogger();
     }

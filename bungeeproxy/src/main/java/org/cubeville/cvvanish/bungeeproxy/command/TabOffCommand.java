@@ -45,7 +45,7 @@ public final class TabOffCommand extends PlayerCommand {
     
     public TabOffCommand(final CVVanish vanishPlugin) {
     	
-    	super("toff", USE_PERMISSION, convertSyntax(SYNTAX));
+    	super("toff", USE_PERMISSION, convertText(SYNTAX));
     	
     	this.vanishPlugin = vanishPlugin;
     	

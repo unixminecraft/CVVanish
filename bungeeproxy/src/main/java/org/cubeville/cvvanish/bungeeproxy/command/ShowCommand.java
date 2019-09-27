@@ -45,7 +45,7 @@ public final class ShowCommand extends PlayerCommand {
     
     public ShowCommand(final CVVanish vanishPlugin) {
     	
-    	super("show", USE_PERMISSION, convertSyntax(SYNTAX));
+    	super("show", USE_PERMISSION, convertText(SYNTAX));
     	
     	addFlag("fj");
     	

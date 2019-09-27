@@ -45,7 +45,7 @@ public final class TabOnCommand extends PlayerCommand {
     
     public TabOnCommand(final CVVanish vanishPlugin) {
         
-    	super("ton", USE_PERMISSION, convertSyntax(SYNTAX));
+    	super("ton", USE_PERMISSION, convertText(SYNTAX));
     	
     	this.vanishPlugin = vanishPlugin;
     	

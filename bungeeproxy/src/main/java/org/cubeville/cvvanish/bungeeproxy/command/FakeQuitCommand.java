@@ -41,7 +41,7 @@ public final class FakeQuitCommand extends PlayerCommand {
     
     public FakeQuitCommand(final CVVanish vanishPlugin) {
         
-    	super("fq", USE_PERMISSION, convertSyntax(SYNTAX));
+    	super("fq", USE_PERMISSION, convertText(SYNTAX));
     	
     	this.vanishPlugin = vanishPlugin;
     	

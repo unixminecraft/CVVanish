@@ -38,7 +38,7 @@ public final class LegacyPVCommand extends PlayerCommand {
     
     public LegacyPVCommand(final CVVanish vanishPlugin) {
         
-    	super("pv", USE_PERMISSION, convertSyntax(SYNTAX));
+    	super("pv", USE_PERMISSION, convertText(SYNTAX));
     	
     	addOptionalBaseParameters(2);
     	
