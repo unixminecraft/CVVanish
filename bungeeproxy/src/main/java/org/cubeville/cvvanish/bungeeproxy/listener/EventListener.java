@@ -28,55 +28,55 @@ import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.event.EventPriority;
 
 public final class EventListener implements Listener {
-    
+	
 	private static final String INVISIBLE_JOIN_PERMISSION = "cvvanish.invisible.join";
-    
-    private final CVVanish vanishPlugin;
-    
-    private final ProxyServer proxyServer;
-    
-    public EventListener(final CVVanish vanishPlugin) {
-        
-        this.vanishPlugin = vanishPlugin;
-        
-        this.proxyServer = vanishPlugin.getProxy();
-    }
-    
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onPlayerDisconnect(final PlayerDisconnectEvent event) {
-        
-    	final ProxiedPlayer player = event.getPlayer();
-        
-    	if(player.hasPermission(INVISIBLE_JOIN_PERMISSION)) {
-    		
-    		vanishPlugin.hide(player.getUniqueId());
-    	}
-    }
-    
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onPostLogin(final PostLoginEvent event) {
-        
-    	final ProxiedPlayer player = event.getPlayer();
-    	
-    	if(player.hasPermission(INVISIBLE_JOIN_PERMISSION)) {
-    		
-    		vanishPlugin.hide(player.getUniqueId());
-    	}
-    }
-    
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void onProxyPing(final ProxyPingEvent event) {
-        
-    	final ServerPing serverPing = event.getResponse();
-        int playerCount = 0;
-        
-        for(final ProxiedPlayer onlinePlayer : proxyServer.getPlayers()) {
-            if(vanishPlugin.isFullyVisible(onlinePlayer.getUniqueId())) {
-                playerCount++;
-            }
-        }
-        
-        serverPing.getPlayers().setOnline(playerCount);
-        serverPing.getPlayers().setSample(new ServerPing.PlayerInfo[0]);
-    }
+	
+	private final CVVanish vanishPlugin;
+	
+	private final ProxyServer proxyServer;
+	
+	public EventListener(final CVVanish vanishPlugin) {
+		
+		this.vanishPlugin = vanishPlugin;
+		
+		this.proxyServer = vanishPlugin.getProxy();
+	}
+	
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onPlayerDisconnect(final PlayerDisconnectEvent event) {
+		
+		final ProxiedPlayer player = event.getPlayer();
+		
+		if(player.hasPermission(INVISIBLE_JOIN_PERMISSION)) {
+			
+			vanishPlugin.hide(player.getUniqueId());
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onPostLogin(final PostLoginEvent event) {
+		
+		final ProxiedPlayer player = event.getPlayer();
+		
+		if(player.hasPermission(INVISIBLE_JOIN_PERMISSION)) {
+			
+			vanishPlugin.hide(player.getUniqueId());
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onProxyPing(final ProxyPingEvent event) {
+		
+		final ServerPing serverPing = event.getResponse();
+		int playerCount = 0;
+		
+		for(final ProxiedPlayer onlinePlayer : proxyServer.getPlayers()) {
+			if(vanishPlugin.isFullyVisible(onlinePlayer.getUniqueId())) {
+				playerCount++;
+			}
+		}
+		
+		serverPing.getPlayers().setOnline(playerCount);
+		serverPing.getPlayers().setSample(new ServerPing.PlayerInfo[0]);
+	}
 }

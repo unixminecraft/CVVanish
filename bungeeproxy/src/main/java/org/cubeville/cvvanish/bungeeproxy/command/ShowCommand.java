@@ -33,90 +33,90 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 public final class ShowCommand extends PlayerCommand {
-    
+	
 	private static final String SYNTAX = "&cSyntax: /show [fj]&r";
 	
-    private static final String USE_PERMISSION = "cvvanish.show.use";
-    private static final String NOTIFY_PERMISSION = "cvvanish.show.notify";
-    
-    private final CVVanish vanishPlugin;
-    
-    private final Logger logger;
-    
-    public ShowCommand(final CVVanish vanishPlugin) {
-    	
-    	super("show", USE_PERMISSION, convertText(SYNTAX));
-    	
-    	addFlag("fj");
-    	
-    	this.vanishPlugin = vanishPlugin;
-    	
-    	this.logger = vanishPlugin.getLogger();
-    }
-    
-    @Override
-    public void execute(final ProxiedPlayer player, final Set<String> flags, final Map<String, String> parameters, final List<String> baseParameters) {
-        
+	private static final String USE_PERMISSION = "cvvanish.show.use";
+	private static final String NOTIFY_PERMISSION = "cvvanish.show.notify";
+	
+	private final CVVanish vanishPlugin;
+	
+	private final Logger logger;
+	
+	public ShowCommand(final CVVanish vanishPlugin) {
+		
+		super("show", USE_PERMISSION, convertText(SYNTAX));
+		
+		addFlag("fj");
+		
+		this.vanishPlugin = vanishPlugin;
+		
+		this.logger = vanishPlugin.getLogger();
+	}
+	
+	@Override
+	public void execute(final ProxiedPlayer player, final Set<String> flags, final Map<String, String> parameters, final List<String> baseParameters) {
+		
 		final String logHeader = getClass().getSimpleName() + " (" + player.getName() + ") :";
 		logger.log(Level.INFO, logHeader + "Execution starting.");
-    	
-        final boolean fakeJoin = flags.contains("fj");
-        
-        final UUID playerId = player.getUniqueId();
-        if(vanishPlugin.isFullyVisible(playerId)) {
-            
-            final TextComponent youCantBecomeMoreVisible = new TextComponent();
-            
-            youCantBecomeMoreVisible.setText("No. We won't make you more visible than you already are. It's impossible.");
-            youCantBecomeMoreVisible.setColor(ChatColor.RED);
-            
-            player.sendMessage(youCantBecomeMoreVisible);
-            return;
-        }
-        
-        if(!vanishPlugin.show(playerId)) {
-            
-            logger.log(Level.INFO, "Attempted to show player " + player.getName() + " (UUID: " + playerId.toString() + "), but they were already visible, even after checking to make sure they were not visible.");
-            
-            player.sendMessage(getInternalError());
-            return;
-        }
-        
-        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("[HH:mm:ss]");
-        final String formattedTimeNow = simpleDateFormat.format(new Date(System.currentTimeMillis()));
-        
-        final TextComponent youAreNoLongerHidden = new TextComponent();
-        final TextComponent timeNowValue = new TextComponent();
-        final TextComponent vanishNotification = new TextComponent();
-        final TextComponent playerNameValue = new TextComponent();
-        final TextComponent isNowFullyVisible = new TextComponent();
-        
-        youAreNoLongerHidden.setText("You are no longer hidden. ");
-        timeNowValue.setText(formattedTimeNow);
-        vanishNotification.setText("[CVVanish] ");
-        playerNameValue.setText(player.getName());
-        isNowFullyVisible.setText(" is now fully visible.");
-        
-        youAreNoLongerHidden.setColor(ChatColor.GREEN);
-        timeNowValue.setColor(ChatColor.GREEN);
-        vanishNotification.setColor(ChatColor.DARK_AQUA);
-        playerNameValue.setColor(ChatColor.GOLD);
-        isNowFullyVisible.setColor(ChatColor.DARK_AQUA);
-        
-        player.sendMessage(youAreNoLongerHidden, timeNowValue);
-        
-        final ProxyServer proxyServer = vanishPlugin.getProxy();
-        for(final ProxiedPlayer onlinePlayer : proxyServer.getPlayers()) {
-        	
-            if(onlinePlayer.hasPermission(NOTIFY_PERMISSION)) {
-                onlinePlayer.sendMessage(vanishNotification, playerNameValue, isNowFullyVisible);
-            }
-        }
-        
-        if(!fakeJoin) {
-            return;
-        }
-        
-        proxyServer.getPluginManager().dispatchCommand(player, "fj");
-    }
+		
+		final boolean fakeJoin = flags.contains("fj");
+		
+		final UUID playerId = player.getUniqueId();
+		if(vanishPlugin.isFullyVisible(playerId)) {
+			
+			final TextComponent youCantBecomeMoreVisible = new TextComponent();
+			
+			youCantBecomeMoreVisible.setText("No. We won't make you more visible than you already are. It's impossible.");
+			youCantBecomeMoreVisible.setColor(ChatColor.RED);
+			
+			player.sendMessage(youCantBecomeMoreVisible);
+			return;
+		}
+		
+		if(!vanishPlugin.show(playerId)) {
+			
+			logger.log(Level.INFO, "Attempted to show player " + player.getName() + " (UUID: " + playerId.toString() + "), but they were already visible, even after checking to make sure they were not visible.");
+			
+			player.sendMessage(getInternalError());
+			return;
+		}
+		
+		final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("[HH:mm:ss]");
+		final String formattedTimeNow = simpleDateFormat.format(new Date(System.currentTimeMillis()));
+		
+		final TextComponent youAreNoLongerHidden = new TextComponent();
+		final TextComponent timeNowValue = new TextComponent();
+		final TextComponent vanishNotification = new TextComponent();
+		final TextComponent playerNameValue = new TextComponent();
+		final TextComponent isNowFullyVisible = new TextComponent();
+		
+		youAreNoLongerHidden.setText("You are no longer hidden. ");
+		timeNowValue.setText(formattedTimeNow);
+		vanishNotification.setText("[CVVanish] ");
+		playerNameValue.setText(player.getName());
+		isNowFullyVisible.setText(" is now fully visible.");
+		
+		youAreNoLongerHidden.setColor(ChatColor.GREEN);
+		timeNowValue.setColor(ChatColor.GREEN);
+		vanishNotification.setColor(ChatColor.DARK_AQUA);
+		playerNameValue.setColor(ChatColor.GOLD);
+		isNowFullyVisible.setColor(ChatColor.DARK_AQUA);
+		
+		player.sendMessage(youAreNoLongerHidden, timeNowValue);
+		
+		final ProxyServer proxyServer = vanishPlugin.getProxy();
+		for(final ProxiedPlayer onlinePlayer : proxyServer.getPlayers()) {
+			
+			if(onlinePlayer.hasPermission(NOTIFY_PERMISSION)) {
+				onlinePlayer.sendMessage(vanishNotification, playerNameValue, isNowFullyVisible);
+			}
+		}
+		
+		if(!fakeJoin) {
+			return;
+		}
+		
+		proxyServer.getPluginManager().dispatchCommand(player, "fj");
+	}
 }

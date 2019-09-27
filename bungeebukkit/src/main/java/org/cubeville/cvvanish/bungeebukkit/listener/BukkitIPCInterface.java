@@ -25,150 +25,150 @@ import org.cubeville.cvipc.bungeebukkit.IPCMessage;
 import org.cubeville.cvvanish.bungeebukkit.CVVanish;
 
 public final class BukkitIPCInterface implements IPCInterface {
-
-    private final CVVanish vanishPlugin;
-    
-    private final Logger logger;
-    
-    public BukkitIPCInterface(final CVVanish plugin) {
-    	
-        this.vanishPlugin = plugin;
-        
-        this.logger = vanishPlugin.getLogger();
-    }
-    
-    @Override
-    public void readIPCMessage(final IPCMessage ipcMessage) {
-        
-        final String channel = ipcMessage.getChannel();
-        final List<String> messages = ipcMessage.getMessages();
-        
-        if(channel.equals(CVVanish.CHANNEL_VANISH_INITIALIZE)) {
-        	
-        	for(final String message : messages) {
-        		
-        		try {
-        			UUID.fromString(message);
-        		}
-        		catch(IllegalArgumentException e) {
-        			
-        			logger.log(Level.INFO, "Unable to parse UUID from " + message + " for vanish initialization.", e);
-        			continue;
-        		}
-        		
-        		vanishPlugin.enableVanish(UUID.fromString(message));
-        	}
-        }
-        else if(channel.equals(CVVanish.CHANNEL_VANISH_ENABLE)) {
-        	
-        	if(messages.size() != 1) {
-        		
-        		logger.log(Level.INFO, "Incorrect message format for vanish enable.");
-        		logger.log(Level.INFO, "IPCMessage size should be 1.");
-        		logger.log(Level.INFO, "IPCMessage data: " + ipcMessage.toString());
-        	}
-        	
-        	final String playerIdValue = messages.get(0);
-        	
-        	try {
-        		UUID.fromString(playerIdValue);
-        	}
-        	catch(IllegalArgumentException e) {
-        		
-        		logger.log(Level.INFO, "Unable to parse UUID from " + playerIdValue + " for enabling vanish.", e);
-        		return;
-        	}
-        	
-        	vanishPlugin.enableVanish(UUID.fromString(playerIdValue));
-        	vanishPlugin.disappear(UUID.fromString(playerIdValue));
-        }
-        else if(channel.equals(CVVanish.CHANNEL_VANISH_DISABLE)) {
-        	
-        	if(messages.size() != 1) {
-        		
-        		logger.log(Level.INFO, "Incorrect message format for vanish disable.");
-        		logger.log(Level.INFO, "IPCMessage size should be 1.");
-        		logger.log(Level.INFO, "IPCMessage data: " + ipcMessage.toString());
-        	}
-        	
-        	final String playerIdValue = messages.get(0);
-        	
-        	try {
-        		UUID.fromString(playerIdValue);
-        	}
-        	catch(IllegalArgumentException e) {
-        		
-        		logger.log(Level.INFO, "Unable to parse UUID from " + playerIdValue + " for disabling vanish.", e);
-        		return;
-        	}
-        	
-        	vanishPlugin.disableVanish(UUID.fromString(playerIdValue));
-        }
-        else if(channel.equals(CVVanish.CHANNEL_PICKUP_INITIALIZE)) {
-        	
-        	for(final String message : messages) {
-        		
-        		try {
-        			UUID.fromString(message);
-        		}
-        		catch(IllegalArgumentException e) {
-        			
-        			logger.log(Level.INFO, "Unable to parse UUID from " + message + " for pickup initialization.", e);
-        			continue;
-        		}
-        		
-        		vanishPlugin.enablePickup(UUID.fromString(message));
-        	}
-        }
-        else if(channel.equals(CVVanish.CHANNEL_PICKUP_ENABLE)) {
-        	
-        	if(messages.size() != 1) {
-        		
-        		logger.log(Level.INFO, "Incorrect message format for pickup enable.");
-        		logger.log(Level.INFO, "IPCMessage size should be 1.");
-        		logger.log(Level.INFO, "IPCMessage data: " + ipcMessage.toString());
-        	}
-        	
-        	final String playerIdValue = messages.get(0);
-        	
-        	try {
-        		UUID.fromString(playerIdValue);
-        	}
-        	catch(IllegalArgumentException e) {
-        		
-        		logger.log(Level.INFO, "Unable to parse UUID from " + playerIdValue + " for enabling pickup.", e);
-        		return;
-        	}
-        	
-        	vanishPlugin.enablePickup(UUID.fromString(playerIdValue));
-        }
-        else if(channel.equals(CVVanish.CHANNEL_PICKUP_DISABLE)) {
-        	
-        	if(messages.size() != 1) {
-        		
-        		logger.log(Level.INFO, "Incorrect message format for pickup disable.");
-        		logger.log(Level.INFO, "IPCMessage size should be 1.");
-        		logger.log(Level.INFO, "IPCMessage data: " + ipcMessage.toString());
-        	}
-        	
-        	final String playerIdValue = messages.get(0);
-        	
-        	try {
-        		UUID.fromString(playerIdValue);
-        	}
-        	catch(IllegalArgumentException e) {
-        		
-        		logger.log(Level.INFO, "Unable to parse UUID from " + playerIdValue + " for disabling pickup.", e);
-        		return;
-        	}
-        	
-        	vanishPlugin.disablePickup(UUID.fromString(playerIdValue));
-        }
-        else {
-        	
-        	logger.log(Level.INFO, "Channel " + channel + " made it to the CVVanish BukkitIPCInterface.");
-        	logger.log(Level.INFO, "That channel is not registered to this IPCInterface.");
-        	logger.log(Level.INFO, "IPCMessage data: " + ipcMessage.toString());
-        }
-    }
+	
+	private final CVVanish vanishPlugin;
+	
+	private final Logger logger;
+	
+	public BukkitIPCInterface(final CVVanish plugin) {
+		
+		this.vanishPlugin = plugin;
+		
+		this.logger = vanishPlugin.getLogger();
+	}
+	
+	@Override
+	public void readIPCMessage(final IPCMessage ipcMessage) {
+		
+		final String channel = ipcMessage.getChannel();
+		final List<String> messages = ipcMessage.getMessages();
+		
+		if(channel.equals(CVVanish.CHANNEL_VANISH_INITIALIZE)) {
+			
+			for(final String message : messages) {
+				
+				try {
+					UUID.fromString(message);
+				}
+				catch(IllegalArgumentException e) {
+					
+					logger.log(Level.INFO, "Unable to parse UUID from " + message + " for vanish initialization.", e);
+					continue;
+				}
+				
+				vanishPlugin.enableVanish(UUID.fromString(message));
+			}
+		}
+		else if(channel.equals(CVVanish.CHANNEL_VANISH_ENABLE)) {
+			
+			if(messages.size() != 1) {
+				
+				logger.log(Level.INFO, "Incorrect message format for vanish enable.");
+				logger.log(Level.INFO, "IPCMessage size should be 1.");
+				logger.log(Level.INFO, "IPCMessage data: " + ipcMessage.toString());
+			}
+			
+			final String playerIdValue = messages.get(0);
+			
+			try {
+				UUID.fromString(playerIdValue);
+			}
+			catch(IllegalArgumentException e) {
+				
+				logger.log(Level.INFO, "Unable to parse UUID from " + playerIdValue + " for enabling vanish.", e);
+				return;
+			}
+			
+			vanishPlugin.enableVanish(UUID.fromString(playerIdValue));
+			vanishPlugin.disappear(UUID.fromString(playerIdValue));
+		}
+		else if(channel.equals(CVVanish.CHANNEL_VANISH_DISABLE)) {
+			
+			if(messages.size() != 1) {
+				
+				logger.log(Level.INFO, "Incorrect message format for vanish disable.");
+				logger.log(Level.INFO, "IPCMessage size should be 1.");
+				logger.log(Level.INFO, "IPCMessage data: " + ipcMessage.toString());
+			}
+			
+			final String playerIdValue = messages.get(0);
+			
+			try {
+				UUID.fromString(playerIdValue);
+			}
+			catch(IllegalArgumentException e) {
+				
+				logger.log(Level.INFO, "Unable to parse UUID from " + playerIdValue + " for disabling vanish.", e);
+				return;
+			}
+			
+			vanishPlugin.disableVanish(UUID.fromString(playerIdValue));
+		}
+		else if(channel.equals(CVVanish.CHANNEL_PICKUP_INITIALIZE)) {
+			
+			for(final String message : messages) {
+				
+				try {
+					UUID.fromString(message);
+				}
+				catch(IllegalArgumentException e) {
+					
+					logger.log(Level.INFO, "Unable to parse UUID from " + message + " for pickup initialization.", e);
+					continue;
+				}
+				
+				vanishPlugin.enablePickup(UUID.fromString(message));
+			}
+		}
+		else if(channel.equals(CVVanish.CHANNEL_PICKUP_ENABLE)) {
+			
+			if(messages.size() != 1) {
+				
+				logger.log(Level.INFO, "Incorrect message format for pickup enable.");
+				logger.log(Level.INFO, "IPCMessage size should be 1.");
+				logger.log(Level.INFO, "IPCMessage data: " + ipcMessage.toString());
+			}
+			
+			final String playerIdValue = messages.get(0);
+			
+			try {
+				UUID.fromString(playerIdValue);
+			}
+			catch(IllegalArgumentException e) {
+				
+				logger.log(Level.INFO, "Unable to parse UUID from " + playerIdValue + " for enabling pickup.", e);
+				return;
+			}
+			
+			vanishPlugin.enablePickup(UUID.fromString(playerIdValue));
+		}
+		else if(channel.equals(CVVanish.CHANNEL_PICKUP_DISABLE)) {
+			
+			if(messages.size() != 1) {
+				
+				logger.log(Level.INFO, "Incorrect message format for pickup disable.");
+				logger.log(Level.INFO, "IPCMessage size should be 1.");
+				logger.log(Level.INFO, "IPCMessage data: " + ipcMessage.toString());
+			}
+			
+			final String playerIdValue = messages.get(0);
+			
+			try {
+				UUID.fromString(playerIdValue);
+			}
+			catch(IllegalArgumentException e) {
+				
+				logger.log(Level.INFO, "Unable to parse UUID from " + playerIdValue + " for disabling pickup.", e);
+				return;
+			}
+			
+			vanishPlugin.disablePickup(UUID.fromString(playerIdValue));
+		}
+		else {
+			
+			logger.log(Level.INFO, "Channel " + channel + " made it to the CVVanish BukkitIPCInterface.");
+			logger.log(Level.INFO, "That channel is not registered to this IPCInterface.");
+			logger.log(Level.INFO, "IPCMessage data: " + ipcMessage.toString());
+		}
+	}
 }

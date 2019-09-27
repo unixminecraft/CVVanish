@@ -29,38 +29,38 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 public final class LegacyPVCommand extends PlayerCommand {
-    
+	
 	private static final String SYNTAX = "&cSyntax: /pv&r";
 	
-    private static final String USE_PERMISSION = "cvvanish.legacypv.use";
-    
-    private final Logger logger;
-    
-    public LegacyPVCommand(final CVVanish vanishPlugin) {
-        
-    	super("pv", USE_PERMISSION, convertText(SYNTAX));
-    	
-    	addOptionalBaseParameters(2);
-    	
-    	this.logger = vanishPlugin.getLogger();
-    }
-    
-    @Override
-    public void execute(final ProxiedPlayer player, final Set<String> flags, final Map<String, String> parameters, final List<String> baseParameters) {
-        
+	private static final String USE_PERMISSION = "cvvanish.legacypv.use";
+	
+	private final Logger logger;
+	
+	public LegacyPVCommand(final CVVanish vanishPlugin) {
+		
+		super("pv", USE_PERMISSION, convertText(SYNTAX));
+		
+		addOptionalBaseParameters(2);
+		
+		this.logger = vanishPlugin.getLogger();
+	}
+	
+	@Override
+	public void execute(final ProxiedPlayer player, final Set<String> flags, final Map<String, String> parameters, final List<String> baseParameters) {
+		
 		final String logHeader = getClass().getSimpleName() + " (" + player.getName() + ") :";
 		logger.log(Level.INFO, logHeader + "Execution starting.");
-    	
-        final TextComponent thisIsTheLegacyVanishCommand = new TextComponent();
-        final TextComponent pleaseCheckTheStaffForums = new TextComponent();
-        
-        thisIsTheLegacyVanishCommand.setText("This is the legacy vanish command.");
-        pleaseCheckTheStaffForums.setText("Please check the staff forums for an updated list of commands.");
-        
-        thisIsTheLegacyVanishCommand.setColor(ChatColor.RED);
-        pleaseCheckTheStaffForums.setColor(ChatColor.AQUA);
-        
-        player.sendMessage(thisIsTheLegacyVanishCommand);
-        player.sendMessage(pleaseCheckTheStaffForums);
-    }
+		
+		final TextComponent thisIsTheLegacyVanishCommand = new TextComponent();
+		final TextComponent pleaseCheckTheStaffForums = new TextComponent();
+		
+		thisIsTheLegacyVanishCommand.setText("This is the legacy vanish command.");
+		pleaseCheckTheStaffForums.setText("Please check the staff forums for an updated list of commands.");
+		
+		thisIsTheLegacyVanishCommand.setColor(ChatColor.RED);
+		pleaseCheckTheStaffForums.setColor(ChatColor.AQUA);
+		
+		player.sendMessage(thisIsTheLegacyVanishCommand);
+		player.sendMessage(pleaseCheckTheStaffForums);
+	}
 }

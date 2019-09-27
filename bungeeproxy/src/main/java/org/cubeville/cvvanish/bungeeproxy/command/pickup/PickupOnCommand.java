@@ -53,34 +53,34 @@ public final class PickupOnCommand extends SubPlayerCommand {
 		
 		final String logHeader = getClass().getSimpleName() + " (" + player.getName() + ") :";
 		logger.log(Level.INFO, logHeader + "Execution starting.");
-    	
-    	final UUID playerId = player.getUniqueId();
-    	final boolean pickupEnabled = vanishPlugin.isPickupEnabled(playerId);
-    	
-        if(pickupEnabled) {
-            
-        	final TextComponent pickupAlreadyEnabled = new TextComponent();
-        	
-            pickupAlreadyEnabled.setText("You already have item pickup enabled, you can't enable it more.");
-            pickupAlreadyEnabled.setColor(ChatColor.RED);
-            
-            player.sendMessage(pickupAlreadyEnabled);
-            return;
-        }
-        
-        if(!vanishPlugin.enablePickup(playerId)) {
-            
-            logger.log(Level.INFO, "Attempted to enable pickup for player " + player.getName() + " (UUID: " + playerId.toString() + "), but they already had pickup enabled, even after checking to make sure they did not have pickup enabled.");
-            
-            player.sendMessage(getInternalError());
-            return;
-        }
-        
-        final TextComponent itemPickupEnabled = new TextComponent();
-        
-        itemPickupEnabled.setText("Item pickup enabled.");
-        itemPickupEnabled.setColor(ChatColor.GREEN);
-        
-        player.sendMessage(itemPickupEnabled);
+		
+		final UUID playerId = player.getUniqueId();
+		final boolean pickupEnabled = vanishPlugin.isPickupEnabled(playerId);
+		
+		if(pickupEnabled) {
+			
+			final TextComponent pickupAlreadyEnabled = new TextComponent();
+			
+			pickupAlreadyEnabled.setText("You already have item pickup enabled, you can't enable it more.");
+			pickupAlreadyEnabled.setColor(ChatColor.RED);
+			
+			player.sendMessage(pickupAlreadyEnabled);
+			return;
+		}
+		
+		if(!vanishPlugin.enablePickup(playerId)) {
+			
+			logger.log(Level.INFO, "Attempted to enable pickup for player " + player.getName() + " (UUID: " + playerId.toString() + "), but they already had pickup enabled, even after checking to make sure they did not have pickup enabled.");
+			
+			player.sendMessage(getInternalError());
+			return;
+		}
+		
+		final TextComponent itemPickupEnabled = new TextComponent();
+		
+		itemPickupEnabled.setText("Item pickup enabled.");
+		itemPickupEnabled.setColor(ChatColor.GREEN);
+		
+		player.sendMessage(itemPickupEnabled);
 	}
 }

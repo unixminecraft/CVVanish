@@ -53,34 +53,34 @@ public final class PickupOffCommand extends SubPlayerCommand {
 		
 		final String logHeader = getClass().getSimpleName() + " (" + player.getName() + ") :";
 		logger.log(Level.INFO, logHeader + "Execution starting.");
-    	
-    	final UUID playerId = player.getUniqueId();
-    	final boolean pickupEnabled = vanishPlugin.isPickupEnabled(playerId);
-    	
-        if(!pickupEnabled) {
-            
-        	final TextComponent pickupAlreadyDisabled = new TextComponent();
-            
-            pickupAlreadyDisabled.setText("You don't have item pickup enabled, disabling more would probably cause you to drop your items.");
-            pickupAlreadyDisabled.setColor(ChatColor.RED);
-            
-            player.sendMessage(pickupAlreadyDisabled);
-            return;
-        }
-        
-        if(!vanishPlugin.disablePickup(playerId)) {
-            
-            logger.log(Level.INFO, "Attempted to disable pickup for player " + player.getName() + " (UUID: " + playerId.toString() + "), but they already had pickup disabled, even after checking to make sure they did not have pickup disabled.");
-            
-            player.sendMessage(getInternalError());
-            return;
-        }
-        
-        final TextComponent itemPickupDisabled = new TextComponent();
-        
-        itemPickupDisabled.setText("Item pickup disabled.");
-        itemPickupDisabled.setColor(ChatColor.GREEN);
-        
-        player.sendMessage(itemPickupDisabled);
+		
+		final UUID playerId = player.getUniqueId();
+		final boolean pickupEnabled = vanishPlugin.isPickupEnabled(playerId);
+		
+		if(!pickupEnabled) {
+			
+			final TextComponent pickupAlreadyDisabled = new TextComponent();
+			
+			pickupAlreadyDisabled.setText("You don't have item pickup enabled, disabling more would probably cause you to drop your items.");
+			pickupAlreadyDisabled.setColor(ChatColor.RED);
+			
+			player.sendMessage(pickupAlreadyDisabled);
+			return;
+		}
+		
+		if(!vanishPlugin.disablePickup(playerId)) {
+			
+			logger.log(Level.INFO, "Attempted to disable pickup for player " + player.getName() + " (UUID: " + playerId.toString() + "), but they already had pickup disabled, even after checking to make sure they did not have pickup disabled.");
+			
+			player.sendMessage(getInternalError());
+			return;
+		}
+		
+		final TextComponent itemPickupDisabled = new TextComponent();
+		
+		itemPickupDisabled.setText("Item pickup disabled.");
+		itemPickupDisabled.setColor(ChatColor.GREEN);
+		
+		player.sendMessage(itemPickupDisabled);
 	}
 }

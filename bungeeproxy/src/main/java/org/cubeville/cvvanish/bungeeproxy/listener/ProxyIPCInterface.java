@@ -24,47 +24,47 @@ import org.cubeville.cvipc.bungeeproxy.listener.IPCInterface;
 import org.cubeville.cvvanish.bungeeproxy.CVVanish;
 
 public final class ProxyIPCInterface implements IPCInterface {
-    
-    private final CVVanish vanishPlugin;
-    private final Logger logger;
-    
-    public ProxyIPCInterface(final CVVanish vanishPlugin) {
-        
-        this.vanishPlugin = vanishPlugin;
-        this.logger = vanishPlugin.getLogger();
-    }
-    
-    @Override
-    public void readIPCMessage(final IPCMessage ipcMessage) {
-        
-    	final String channel = ipcMessage.getChannel();
-    	
-        if(channel.equals(CVVanish.CHANNEL_CVVANISH_BUKKIT_READY)) {
-        	
-        	final String serverName = ipcMessage.getServerName();
-        	final List<String> messages = ipcMessage.getMessages();
-        	
-            if(messages.size() != 1) {
-                
-            	logger.log(Level.INFO, "Bukkit server vanish initialization for server " + serverName + " does not have the correct amount of data.");
-            	logger.log(Level.INFO, "The number of messages should be 1, it is currently " + String.valueOf(messages.size()) + ".");
-            	logger.log(Level.INFO, "IPCMessage data: " + ipcMessage.toString());
-                return;
-            }
-            
-            if(!messages.get(0).equals("cvvanish_bukkit_ready")) {
-                
-            	logger.log(Level.INFO, "Bukkit server vanish initialization for server " + serverName + " does not have the correct data.");
-            	logger.log(Level.INFO, "The single message should be \"cvvanish_bukkit_ready\".");
-            	logger.log(Level.INFO, "IPCMessage data: " + ipcMessage.toString());
-                return;
-            }
-            
-            vanishPlugin.initializeServer(serverName);
-        }
-        else {
-        	
-        	logger.log(Level.INFO, "IPC channel " + channel + " is not registered to this IPCInterface. IPCMessage data: " + ipcMessage.toString());
-        }
-    }
+	
+	private final CVVanish vanishPlugin;
+	private final Logger logger;
+	
+	public ProxyIPCInterface(final CVVanish vanishPlugin) {
+		
+		this.vanishPlugin = vanishPlugin;
+		this.logger = vanishPlugin.getLogger();
+	}
+	
+	@Override
+	public void readIPCMessage(final IPCMessage ipcMessage) {
+		
+		final String channel = ipcMessage.getChannel();
+		
+		if(channel.equals(CVVanish.CHANNEL_CVVANISH_BUKKIT_READY)) {
+			
+			final String serverName = ipcMessage.getServerName();
+			final List<String> messages = ipcMessage.getMessages();
+			
+			if(messages.size() != 1) {
+				
+				logger.log(Level.INFO, "Bukkit server vanish initialization for server " + serverName + " does not have the correct amount of data.");
+				logger.log(Level.INFO, "The number of messages should be 1, it is currently " + String.valueOf(messages.size()) + ".");
+				logger.log(Level.INFO, "IPCMessage data: " + ipcMessage.toString());
+				return;
+			}
+			
+			if(!messages.get(0).equals("cvvanish_bukkit_ready")) {
+				
+				logger.log(Level.INFO, "Bukkit server vanish initialization for server " + serverName + " does not have the correct data.");
+				logger.log(Level.INFO, "The single message should be \"cvvanish_bukkit_ready\".");
+				logger.log(Level.INFO, "IPCMessage data: " + ipcMessage.toString());
+				return;
+			}
+			
+			vanishPlugin.initializeServer(serverName);
+		}
+		else {
+			
+			logger.log(Level.INFO, "IPC channel " + channel + " is not registered to this IPCInterface. IPCMessage data: " + ipcMessage.toString());
+		}
+	}
 }

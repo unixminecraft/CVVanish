@@ -29,48 +29,48 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 public class LegacyVCommand extends PlayerCommand {
-    
+	
 	private static final String SYNTAX = "&cSyntax: /v&r";
 	
-    private static final String USE_PERMISSION = "cvvanish.legacyv.use";
-    
-    private final Logger logger;
-    
-    public LegacyVCommand(final CVVanish vanishPlugin) {
-        
-    	super("v", USE_PERMISSION, convertText(SYNTAX));
-    	
-    	this.logger = vanishPlugin.getLogger();
-    }
-
-    @Override
-    public void execute(final ProxiedPlayer player, final Set<String> flags, final Map<String, String> parameters, final List<String> baseParameters) {
-        
+	private static final String USE_PERMISSION = "cvvanish.legacyv.use";
+	
+	private final Logger logger;
+	
+	public LegacyVCommand(final CVVanish vanishPlugin) {
+		
+		super("v", USE_PERMISSION, convertText(SYNTAX));
+		
+		this.logger = vanishPlugin.getLogger();
+	}
+	
+	@Override
+	public void execute(final ProxiedPlayer player, final Set<String> flags, final Map<String, String> parameters, final List<String> baseParameters) {
+		
 		final String logHeader = getClass().getSimpleName() + " (" + player.getName() + ") :";
 		logger.log(Level.INFO, logHeader + "Execution starting.");
-    	
+		
 		final TextComponent thisIsTheLegacyVanishCommand = new TextComponent();
 		final TextComponent theNewCommandsAre = new TextComponent();
 		final TextComponent hideCommandValue = new TextComponent();
 		final TextComponent and = new TextComponent();
 		final TextComponent showCommandValue = new TextComponent();
 		final TextComponent period = new TextComponent();
-        
-        thisIsTheLegacyVanishCommand.setText("This is the legacy vanish command.");
-        theNewCommandsAre.setText("The new commands are ");
-        hideCommandValue.setText("/hide");
-        and.setText(" and ");
-        showCommandValue.setText("/show");
-        period.setText(".");
-        
-        thisIsTheLegacyVanishCommand.setColor(ChatColor.RED);
-        theNewCommandsAre.setColor(ChatColor.GREEN);
-        hideCommandValue.setColor(ChatColor.GOLD);
-        and.setColor(ChatColor.GREEN);
-        showCommandValue.setColor(ChatColor.GOLD);
-        period.setColor(ChatColor.GREEN);
-        
-        player.sendMessage(thisIsTheLegacyVanishCommand);
-        player.sendMessage(theNewCommandsAre, hideCommandValue, and, showCommandValue, period);
-    }
+		
+		thisIsTheLegacyVanishCommand.setText("This is the legacy vanish command.");
+		theNewCommandsAre.setText("The new commands are ");
+		hideCommandValue.setText("/hide");
+		and.setText(" and ");
+		showCommandValue.setText("/show");
+		period.setText(".");
+		
+		thisIsTheLegacyVanishCommand.setColor(ChatColor.RED);
+		theNewCommandsAre.setColor(ChatColor.GREEN);
+		hideCommandValue.setColor(ChatColor.GOLD);
+		and.setColor(ChatColor.GREEN);
+		showCommandValue.setColor(ChatColor.GOLD);
+		period.setColor(ChatColor.GREEN);
+		
+		player.sendMessage(thisIsTheLegacyVanishCommand);
+		player.sendMessage(theNewCommandsAre, hideCommandValue, and, showCommandValue, period);
+	}
 }

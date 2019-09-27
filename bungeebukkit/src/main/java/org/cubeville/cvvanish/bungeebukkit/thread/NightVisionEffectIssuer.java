@@ -26,50 +26,50 @@ import org.bukkit.scheduler.BukkitScheduler;
 import org.cubeville.cvvanish.bungeebukkit.CVVanish;
 
 public final class NightVisionEffectIssuer implements Runnable {
-
-    private final CVVanish vanishPlugin;
-    
-    private final Server bukkitServer;
-    private final BukkitScheduler bukkitScheduler;
-    
-    private int nightVisionScheduledTaskIdNumber;
-    
-    public NightVisionEffectIssuer(final CVVanish vanishPlugin) {
-    	
-        this.vanishPlugin = vanishPlugin;
-        
-        this.bukkitServer = vanishPlugin.getServer();
-        this.bukkitScheduler = this.bukkitServer.getScheduler();
-        
-    }
-    
-    public void start() {
-    	
-        nightVisionScheduledTaskIdNumber = bukkitScheduler.scheduleSyncRepeatingTask(vanishPlugin, this, 2400, 2400);
-    }
-    
-    public void stop() {
-        
-        if(nightVisionScheduledTaskIdNumber != -1) {
-        	bukkitScheduler.cancelTask(nightVisionScheduledTaskIdNumber);
-        }
-    }
-    
-    @Override
-    public void run() {
-        
-    	final HashSet<UUID> hiddenPlayerIds = vanishPlugin.getVanishedPlayerIds();
-        
-        for(final UUID hiddenPlayerId : hiddenPlayerIds) {
-            
-        	final Player hiddenPlayer = bukkitServer.getPlayer(hiddenPlayerId);
-            if(hiddenPlayer == null) {
-                continue;
-            }
-            
-            final PotionEffect nightVisionPotionEffect = new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 1);
-            hiddenPlayer.removePotionEffect(PotionEffectType.NIGHT_VISION);
-            hiddenPlayer.addPotionEffect(nightVisionPotionEffect);
-        }
-    }
+	
+	private final CVVanish vanishPlugin;
+	
+	private final Server bukkitServer;
+	private final BukkitScheduler bukkitScheduler;
+	
+	private int nightVisionScheduledTaskIdNumber;
+	
+	public NightVisionEffectIssuer(final CVVanish vanishPlugin) {
+		
+		this.vanishPlugin = vanishPlugin;
+		
+		this.bukkitServer = vanishPlugin.getServer();
+		this.bukkitScheduler = this.bukkitServer.getScheduler();
+		
+	}
+	
+	public void start() {
+		
+		nightVisionScheduledTaskIdNumber = bukkitScheduler.scheduleSyncRepeatingTask(vanishPlugin, this, 2400, 2400);
+	}
+	
+	public void stop() {
+		
+		if(nightVisionScheduledTaskIdNumber != -1) {
+			bukkitScheduler.cancelTask(nightVisionScheduledTaskIdNumber);
+		}
+	}
+	
+	@Override
+	public void run() {
+		
+		final HashSet<UUID> hiddenPlayerIds = vanishPlugin.getVanishedPlayerIds();
+		
+		for(final UUID hiddenPlayerId : hiddenPlayerIds) {
+			
+			final Player hiddenPlayer = bukkitServer.getPlayer(hiddenPlayerId);
+			if(hiddenPlayer == null) {
+				continue;
+			}
+			
+			final PotionEffect nightVisionPotionEffect = new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 1);
+			hiddenPlayer.removePotionEffect(PotionEffectType.NIGHT_VISION);
+			hiddenPlayer.addPotionEffect(nightVisionPotionEffect);
+		}
+	}
 }

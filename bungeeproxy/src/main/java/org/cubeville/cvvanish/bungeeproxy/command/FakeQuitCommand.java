@@ -29,56 +29,56 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 public final class FakeQuitCommand extends PlayerCommand {
-    
+	
 	private static final String SYNTAX = "&cSyntax: /fq&r";
 	
-    private static final String USE_PERMISSION = "cvvanish.fakequit.use";
-    private static final String NOTIFY_PERMISSION = "cvvanish.fakequit.notify";
-    
-    private final CVVanish vanishPlugin;
-    
-    private final Logger logger;
-    
-    public FakeQuitCommand(final CVVanish vanishPlugin) {
-        
-    	super("fq", USE_PERMISSION, convertText(SYNTAX));
-    	
-    	this.vanishPlugin = vanishPlugin;
-    	
-    	this.logger = vanishPlugin.getLogger();
-    }
-    
-    @Override
-    public void execute(final ProxiedPlayer player, final Set<String> flags, final Map<String, String> parameters, final List<String> baseParameters) {
-        
+	private static final String USE_PERMISSION = "cvvanish.fakequit.use";
+	private static final String NOTIFY_PERMISSION = "cvvanish.fakequit.notify";
+	
+	private final CVVanish vanishPlugin;
+	
+	private final Logger logger;
+	
+	public FakeQuitCommand(final CVVanish vanishPlugin) {
+		
+		super("fq", USE_PERMISSION, convertText(SYNTAX));
+		
+		this.vanishPlugin = vanishPlugin;
+		
+		this.logger = vanishPlugin.getLogger();
+	}
+	
+	@Override
+	public void execute(final ProxiedPlayer player, final Set<String> flags, final Map<String, String> parameters, final List<String> baseParameters) {
+		
 		final String logHeader = getClass().getSimpleName() + " (" + player.getName() + ") :";
 		logger.log(Level.INFO, logHeader + "Execution starting.");
-    	
+		
 		final TextComponent playerNameValueAll = new TextComponent();
 		final TextComponent leftTheGame = new TextComponent();
 		final TextComponent vanishNotification = new TextComponent();
 		final TextComponent playerNameValueNotify = new TextComponent();
 		final TextComponent isStillHere = new TextComponent();
-        
-        playerNameValueAll.setText(player.getName());
-        leftTheGame.setText(" left the game.");
-        vanishNotification.setText("[CVVanish] ");
-        playerNameValueNotify.setText(player.getName());
-        isStillHere.setText(" is still here, they did not acutally leave.");
-        
-        playerNameValueAll.setColor(ChatColor.YELLOW);
-        leftTheGame.setColor(ChatColor.YELLOW);
-        vanishNotification.setColor(ChatColor.DARK_AQUA);
-        playerNameValueNotify.setColor(ChatColor.GOLD);
-        isStillHere.setColor(ChatColor.DARK_AQUA);
-        
-        for(final ProxiedPlayer onlinePlayer : vanishPlugin.getProxy().getPlayers()) {
-            
-            onlinePlayer.sendMessage(playerNameValueAll, leftTheGame);
-            
-            if(onlinePlayer.hasPermission(NOTIFY_PERMISSION)) {
-                onlinePlayer.sendMessage(vanishNotification, playerNameValueNotify, isStillHere);
-            }
-        }
-    }
+		
+		playerNameValueAll.setText(player.getName());
+		leftTheGame.setText(" left the game.");
+		vanishNotification.setText("[CVVanish] ");
+		playerNameValueNotify.setText(player.getName());
+		isStillHere.setText(" is still here, they did not acutally leave.");
+		
+		playerNameValueAll.setColor(ChatColor.YELLOW);
+		leftTheGame.setColor(ChatColor.YELLOW);
+		vanishNotification.setColor(ChatColor.DARK_AQUA);
+		playerNameValueNotify.setColor(ChatColor.GOLD);
+		isStillHere.setColor(ChatColor.DARK_AQUA);
+		
+		for(final ProxiedPlayer onlinePlayer : vanishPlugin.getProxy().getPlayers()) {
+			
+			onlinePlayer.sendMessage(playerNameValueAll, leftTheGame);
+			
+			if(onlinePlayer.hasPermission(NOTIFY_PERMISSION)) {
+				onlinePlayer.sendMessage(vanishNotification, playerNameValueNotify, isStillHere);
+			}
+		}
+	}
 }

@@ -30,72 +30,72 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 public final class PickupCommand extends PlayerCommand {
-    
+	
 	private static final String SYNTAX = "&cSyntax: /vpickup [on|off]&r";
 	
-    private static final String USE_PERMISSION = "cvvanish.pickup.use";
-    
-    private final CVVanish vanishPlugin;
-    
-    private final Logger logger;
-    
-    public PickupCommand(final CVVanish vanishPlugin) {
-        
-    	super("vpickup", USE_PERMISSION, convertText(SYNTAX));
-    	
-    	this.vanishPlugin = vanishPlugin;
-    	
-    	this.logger = vanishPlugin.getLogger();
-    }
-    
-    @Override
-    public void execute(final ProxiedPlayer player, final Set<String> flags, final Map<String, String> parameters, final List<String> baseParameters) {
-        
+	private static final String USE_PERMISSION = "cvvanish.pickup.use";
+	
+	private final CVVanish vanishPlugin;
+	
+	private final Logger logger;
+	
+	public PickupCommand(final CVVanish vanishPlugin) {
+		
+		super("vpickup", USE_PERMISSION, convertText(SYNTAX));
+		
+		this.vanishPlugin = vanishPlugin;
+		
+		this.logger = vanishPlugin.getLogger();
+	}
+	
+	@Override
+	public void execute(final ProxiedPlayer player, final Set<String> flags, final Map<String, String> parameters, final List<String> baseParameters) {
+		
 		final String logHeader = getClass().getSimpleName() + " (" + player.getName() + ") :";
 		logger.log(Level.INFO, logHeader + "Execution starting.");
-    	
-    	final UUID playerId = player.getUniqueId();
-    	final boolean pickupEnabled = vanishPlugin.isPickupEnabled(playerId);
-            
-    	final TextComponent pickingUpItems = new TextComponent();
-    	final TextComponent pickupStatusValue = new TextComponent();
-    	final TextComponent period = new TextComponent();
-    	final TextComponent toTurnIt = new TextComponent();
-    	final TextComponent toggleValue = new TextComponent();
-    	final TextComponent use = new TextComponent();
-    	final TextComponent toggleCommandValue = new TextComponent();
-        
-        pickingUpItems.setText("Picking up items is currently ");
-        period.setText(".");
-        toTurnIt.setText("To turn it ");
-        use.setText(", use ");
-        
-        pickingUpItems.setColor(ChatColor.YELLOW);
-        period.setColor(ChatColor.YELLOW);
-        toTurnIt.setColor(ChatColor.YELLOW);
-        use.setColor(ChatColor.YELLOW);
-        toggleCommandValue.setColor(ChatColor.AQUA);
-        
-        if(pickupEnabled) {
-            
-            pickupStatusValue.setText("ENABLED");
-            toggleValue.setText("off");
-            toggleCommandValue.setText("/vpickup off");
-            
-            pickupStatusValue.setColor(ChatColor.GREEN);
-            toggleValue.setColor(ChatColor.RED);
-        }
-        else {
-            
-            pickupStatusValue.setText("DISABLED");
-            toggleValue.setText("on");
-            toggleCommandValue.setText("/vpickup on");
-            
-            pickupStatusValue.setColor(ChatColor.RED);
-            toggleValue.setColor(ChatColor.GREEN);
-        }
-        
-        player.sendMessage(pickingUpItems, pickupStatusValue, period);
-        player.sendMessage(toTurnIt, toggleValue, use, toggleCommandValue, period);
-    }
+		
+		final UUID playerId = player.getUniqueId();
+		final boolean pickupEnabled = vanishPlugin.isPickupEnabled(playerId);
+		
+		final TextComponent pickingUpItems = new TextComponent();
+		final TextComponent pickupStatusValue = new TextComponent();
+		final TextComponent period = new TextComponent();
+		final TextComponent toTurnIt = new TextComponent();
+		final TextComponent toggleValue = new TextComponent();
+		final TextComponent use = new TextComponent();
+		final TextComponent toggleCommandValue = new TextComponent();
+		
+		pickingUpItems.setText("Picking up items is currently ");
+		period.setText(".");
+		toTurnIt.setText("To turn it ");
+		use.setText(", use ");
+		
+		pickingUpItems.setColor(ChatColor.YELLOW);
+		period.setColor(ChatColor.YELLOW);
+		toTurnIt.setColor(ChatColor.YELLOW);
+		use.setColor(ChatColor.YELLOW);
+		toggleCommandValue.setColor(ChatColor.AQUA);
+		
+		if(pickupEnabled) {
+			
+			pickupStatusValue.setText("ENABLED");
+			toggleValue.setText("off");
+			toggleCommandValue.setText("/vpickup off");
+			
+			pickupStatusValue.setColor(ChatColor.GREEN);
+			toggleValue.setColor(ChatColor.RED);
+		}
+		else {
+			
+			pickupStatusValue.setText("DISABLED");
+			toggleValue.setText("on");
+			toggleCommandValue.setText("/vpickup on");
+			
+			pickupStatusValue.setColor(ChatColor.RED);
+			toggleValue.setColor(ChatColor.GREEN);
+		}
+		
+		player.sendMessage(pickingUpItems, pickupStatusValue, period);
+		player.sendMessage(toTurnIt, toggleValue, use, toggleCommandValue, period);
+	}
 }

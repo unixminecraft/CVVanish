@@ -33,90 +33,90 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 public final class HideCommand extends PlayerCommand {
-    
+	
 	private static final String SYNTAX = "&cSyntax: /hide [fq]&r";
 	
-    private static final String USE_PERMISSION = "cvvanish.hide.use";
-    private static final String NOTIFY_PERMISSION = "cvvanish.hide.notify";
-    
-    private final CVVanish vanishPlugin;
-    
-    private final Logger logger;
-    
-    public HideCommand(final CVVanish vanishPlugin) {
-    	
-    	super("hide", USE_PERMISSION, convertText(SYNTAX));
-    	
-    	addFlag("fq");
-    	
-    	this.vanishPlugin = vanishPlugin;
-    	
-    	this.logger = vanishPlugin.getLogger();
-    }
-    
-    @Override
-    public void execute(final ProxiedPlayer player, final Set<String> flags, final Map<String, String> parameters, final List<String> baseParameters) {
-        
+	private static final String USE_PERMISSION = "cvvanish.hide.use";
+	private static final String NOTIFY_PERMISSION = "cvvanish.hide.notify";
+	
+	private final CVVanish vanishPlugin;
+	
+	private final Logger logger;
+	
+	public HideCommand(final CVVanish vanishPlugin) {
+		
+		super("hide", USE_PERMISSION, convertText(SYNTAX));
+		
+		addFlag("fq");
+		
+		this.vanishPlugin = vanishPlugin;
+		
+		this.logger = vanishPlugin.getLogger();
+	}
+	
+	@Override
+	public void execute(final ProxiedPlayer player, final Set<String> flags, final Map<String, String> parameters, final List<String> baseParameters) {
+		
 		final String logHeader = getClass().getSimpleName() + " (" + player.getName() + ") :";
 		logger.log(Level.INFO, logHeader + "Execution starting.");
-    	
-        final boolean fakeQuit = flags.contains("fq");
-        
-        final UUID playerId = player.getUniqueId();
-        if(vanishPlugin.isHidden(playerId)) {
-            
-            final TextComponent youCantHideMore = new TextComponent();
-            
-            youCantHideMore.setText("You can't be any more hidden than you already are.");
-            youCantHideMore.setColor(ChatColor.RED);
-            
-            player.sendMessage(youCantHideMore);
-            return;
-        }
-        
-        if(!vanishPlugin.hide(playerId)) {
-            
-            logger.log(Level.INFO, "Attempted to hide player " + player.getName() + " (UUID: " + playerId.toString() + "), but they were already hidden, even after checking to make sure they were not hidden.");
-            
-            player.sendMessage(getInternalError());
-            return;
-        }
-        
-        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("[HH:mm:ss]");
-        final String formattedTimeNow = simpleDateFormat.format(new Date(System.currentTimeMillis()));
-        
-        final TextComponent youAreHidden = new TextComponent();
-        final TextComponent timeNowValue = new TextComponent();
-        final TextComponent vanishNotification = new TextComponent();
-        final TextComponent playerNameValue = new TextComponent();
-        final TextComponent isNowHidden = new TextComponent();
-        
-        youAreHidden.setText("You are hidden. ");
-        timeNowValue.setText(formattedTimeNow);
-        vanishNotification.setText("[CVVanish] ");
-        playerNameValue.setText(player.getName());
-        isNowHidden.setText(" is now fully hidden.");
-        
-        youAreHidden.setColor(ChatColor.GREEN);
-        timeNowValue.setColor(ChatColor.GREEN);
-        vanishNotification.setColor(ChatColor.DARK_AQUA);
-        playerNameValue.setColor(ChatColor.GOLD);
-        isNowHidden.setColor(ChatColor.DARK_AQUA);
-        
-        player.sendMessage(youAreHidden, timeNowValue);
-        
-        final ProxyServer proxyServer = vanishPlugin.getProxy();
-        for(final ProxiedPlayer onlinePlayer : proxyServer.getPlayers()) {
-        	
-            if(onlinePlayer.hasPermission(NOTIFY_PERMISSION)) {
-                onlinePlayer.sendMessage(vanishNotification, playerNameValue, isNowHidden);
-            }
-        }
-        
-        if(!fakeQuit) {
-            return;
-        }
-        
-        proxyServer.getPluginManager().dispatchCommand(player, "fq");
-    }
+		
+		final boolean fakeQuit = flags.contains("fq");
+		
+		final UUID playerId = player.getUniqueId();
+		if(vanishPlugin.isHidden(playerId)) {
+			
+			final TextComponent youCantHideMore = new TextComponent();
+			
+			youCantHideMore.setText("You can't be any more hidden than you already are.");
+			youCantHideMore.setColor(ChatColor.RED);
+			
+			player.sendMessage(youCantHideMore);
+			return;
+		}
+		
+		if(!vanishPlugin.hide(playerId)) {
+			
+			logger.log(Level.INFO, "Attempted to hide player " + player.getName() + " (UUID: " + playerId.toString() + "), but they were already hidden, even after checking to make sure they were not hidden.");
+			
+			player.sendMessage(getInternalError());
+			return;
+		}
+		
+		final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("[HH:mm:ss]");
+		final String formattedTimeNow = simpleDateFormat.format(new Date(System.currentTimeMillis()));
+		
+		final TextComponent youAreHidden = new TextComponent();
+		final TextComponent timeNowValue = new TextComponent();
+		final TextComponent vanishNotification = new TextComponent();
+		final TextComponent playerNameValue = new TextComponent();
+		final TextComponent isNowHidden = new TextComponent();
+		
+		youAreHidden.setText("You are hidden. ");
+		timeNowValue.setText(formattedTimeNow);
+		vanishNotification.setText("[CVVanish] ");
+		playerNameValue.setText(player.getName());
+		isNowHidden.setText(" is now fully hidden.");
+		
+		youAreHidden.setColor(ChatColor.GREEN);
+		timeNowValue.setColor(ChatColor.GREEN);
+		vanishNotification.setColor(ChatColor.DARK_AQUA);
+		playerNameValue.setColor(ChatColor.GOLD);
+		isNowHidden.setColor(ChatColor.DARK_AQUA);
+		
+		player.sendMessage(youAreHidden, timeNowValue);
+		
+		final ProxyServer proxyServer = vanishPlugin.getProxy();
+		for(final ProxiedPlayer onlinePlayer : proxyServer.getPlayers()) {
+			
+			if(onlinePlayer.hasPermission(NOTIFY_PERMISSION)) {
+				onlinePlayer.sendMessage(vanishNotification, playerNameValue, isNowHidden);
+			}
+		}
+		
+		if(!fakeQuit) {
+			return;
+		}
+		
+		proxyServer.getPluginManager().dispatchCommand(player, "fq");
+	}
 }
