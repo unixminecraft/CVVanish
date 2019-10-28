@@ -36,16 +36,13 @@ public final class VisibilityOnCommand extends PlayerCommand {
 	
 	private static final String SYNTAX = "&cSyntax: /von&r";
 	
-	private static final String USE_PERMISSION = "cvvanish.visibilityon.use";
-	private static final String NOTIFY_PERMISSION = "cvvanish.visibilityon.notify";
-	
 	private final CVVanish vanishPlugin;
 	
 	private final Logger logger;
 	
 	public VisibilityOnCommand(final CVVanish vanishPlugin) {
 		
-		super("von", USE_PERMISSION, convertText(SYNTAX));
+		super("von", CVVanish.PERMISSION_VISIBILITYON_USE, convertText(SYNTAX));
 		
 		this.vanishPlugin = vanishPlugin;
 		
@@ -120,7 +117,7 @@ public final class VisibilityOnCommand extends PlayerCommand {
 			
 			for(ProxiedPlayer onlinePlayer : proxy.getPlayers()) {
 				
-				if(onlinePlayer.hasPermission(NOTIFY_PERMISSION)) {
+				if(onlinePlayer.hasPermission(CVVanish.PERMISSION_VISIBILITYON_NOTIFY)) {
 					onlinePlayer.sendMessage(vanishNotification, playerNameValue, isNow, hiddenStatusValue, period);
 				}
 			}
@@ -137,7 +134,7 @@ public final class VisibilityOnCommand extends PlayerCommand {
 			
 			for(ProxiedPlayer onlinePlayer : proxy.getPlayers()) {
 				
-				if(onlinePlayer.hasPermission(NOTIFY_PERMISSION)) {
+				if(onlinePlayer.hasPermission(CVVanish.PERMISSION_VISIBILITYON_NOTIFY)) {
 					onlinePlayer.sendMessage(vanishNotification, playerNameValue, isNow, hiddenStatusValue, period);
 				}
 			}

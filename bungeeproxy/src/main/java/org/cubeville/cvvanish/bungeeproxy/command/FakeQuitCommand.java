@@ -32,16 +32,13 @@ public final class FakeQuitCommand extends PlayerCommand {
 	
 	private static final String SYNTAX = "&cSyntax: /fq&r";
 	
-	private static final String USE_PERMISSION = "cvvanish.fakequit.use";
-	private static final String NOTIFY_PERMISSION = "cvvanish.fakequit.notify";
-	
 	private final CVVanish vanishPlugin;
 	
 	private final Logger logger;
 	
 	public FakeQuitCommand(final CVVanish vanishPlugin) {
 		
-		super("fq", USE_PERMISSION, convertText(SYNTAX));
+		super("fq", CVVanish.PERMISSION_FAKEQUIT_USE, convertText(SYNTAX));
 		
 		this.vanishPlugin = vanishPlugin;
 		
@@ -76,7 +73,7 @@ public final class FakeQuitCommand extends PlayerCommand {
 			
 			onlinePlayer.sendMessage(playerNameValueAll, leftTheGame);
 			
-			if(onlinePlayer.hasPermission(NOTIFY_PERMISSION)) {
+			if(onlinePlayer.hasPermission(CVVanish.PERMISSION_FAKEQUIT_NOTIFY)) {
 				onlinePlayer.sendMessage(vanishNotification, playerNameValueNotify, isStillHere);
 			}
 		}

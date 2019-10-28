@@ -32,16 +32,13 @@ public final class FakeJoinCommand extends PlayerCommand {
 	
 	private static final String SYNTAX = "&cSyntax: /fj&r";
 	
-	private static final String USE_PERMISSION = "cvvanish.fakejoin.use";
-	private static final String NOTIFY_PERMISSION = "cvvanish.fakejoin.notify";
-	
 	private final CVVanish vanishPlugin;
 	
 	private final Logger logger;
 	
 	public FakeJoinCommand(final CVVanish vanishPlugin) {
 		
-		super("fj", USE_PERMISSION, convertText(SYNTAX));
+		super("fj", CVVanish.PERMISSION_FAKEJOIN_USE, convertText(SYNTAX));
 		
 		this.vanishPlugin = vanishPlugin;
 		
@@ -76,7 +73,7 @@ public final class FakeJoinCommand extends PlayerCommand {
 			
 			onlinePlayer.sendMessage(playerNameValueAll, joinedTheGame);
 			
-			if(onlinePlayer.hasPermission(NOTIFY_PERMISSION)) {
+			if(onlinePlayer.hasPermission(CVVanish.PERMISSION_FAKEJOIN_NOTIFY)) {
 				onlinePlayer.sendMessage(vanishNotification, playerNameValueNotify, wasAlreadyHere);
 			}
 		}

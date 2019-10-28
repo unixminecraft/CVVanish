@@ -32,13 +32,11 @@ public final class LegacyPVCommand extends PlayerCommand {
 	
 	private static final String SYNTAX = "&cSyntax: /pv&r";
 	
-	private static final String USE_PERMISSION = "cvvanish.legacypv.use";
-	
 	private final Logger logger;
 	
 	public LegacyPVCommand(final CVVanish vanishPlugin) {
 		
-		super("pv", USE_PERMISSION, convertText(SYNTAX));
+		super("pv", CVVanish.PERMISSION_LEGACYPV_USE, convertText(SYNTAX));
 		
 		addOptionalBaseParameters(2);
 		

@@ -32,13 +32,11 @@ public class LegacyVCommand extends PlayerCommand {
 	
 	private static final String SYNTAX = "&cSyntax: /v&r";
 	
-	private static final String USE_PERMISSION = "cvvanish.legacyv.use";
-	
 	private final Logger logger;
 	
 	public LegacyVCommand(final CVVanish vanishPlugin) {
 		
-		super("v", USE_PERMISSION, convertText(SYNTAX));
+		super("v", CVVanish.PERMISSION_LEGACYV_USE, convertText(SYNTAX));
 		
 		this.logger = vanishPlugin.getLogger();
 	}

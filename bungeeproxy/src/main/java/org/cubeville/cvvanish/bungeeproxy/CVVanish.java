@@ -59,7 +59,7 @@ public final class CVVanish extends Plugin {
 	
 	private enum HiddenStatus {
 		
-		UNLISTED(KEY_STATUS_UNLISTED), VANISHED(KEY_STATUS_VANISHED), HIDDEN(KEY_STATUS_HIDDEN);
+		UNLISTED(VALUE_STATUS_UNLISTED), VANISHED(VALUE_STATUS_VANISHED), HIDDEN(VALUE_STATUS_HIDDEN);
 		
 		private final String key;
 		
@@ -75,13 +75,13 @@ public final class CVVanish extends Plugin {
 		
 		private static final HiddenStatus fromKey(final String key) throws IllegalArgumentException {
 			
-			if(key.equals(KEY_STATUS_UNLISTED)) {
+			if(key.equals(VALUE_STATUS_UNLISTED)) {
 				return UNLISTED;
 			}
-			else if(key.equals(KEY_STATUS_VANISHED)) {
+			else if(key.equals(VALUE_STATUS_VANISHED)) {
 				return VANISHED;
 			}
-			else if(key.equals(KEY_STATUS_HIDDEN)) {
+			else if(key.equals(VALUE_STATUS_HIDDEN)) {
 				return HIDDEN;
 			}
 			else {
@@ -90,23 +90,59 @@ public final class CVVanish extends Plugin {
 		}
 	}
 	
-	public static final String CHANNEL_CVVANISH_BUKKIT_READY = "CVVANISH_BUKKIT_READY";
+	public static final String PERMISSION_SILENT_JOIN = "cvvanish.silent.join";
+	public static final String PERMISSION_SILENT_LEAVE = "cvvanish.silent.leave";
+	public static final String PERMISSION_SILENT_NOTIFY = "cvvanish.silent.notify";
 	
-	private static final String SILENT_JOIN_PERMISSION = "cvvanish.silent.join";
-	private static final String SILENT_LEAVE_PERMISSION = "cvvanish.silent.leave";
-	private static final String SILENT_NOTIFY_PERMISSION = "cvvanish.silent.notify";
+	public static final String PERMISSION_HIDDEN_JOIN = "cvvanish.hidden.join";
+	
+	public static final String PERMISSION_FAKEJOIN_USE = "cvvanish.fakejoin.use";
+	public static final String PERMISSION_FAKEJOIN_NOTIFY = "cvvanish.fakejoin.notify";
+	
+	public static final String PERMISSION_FAKEQUIT_USE = "cvvanish.fakequit.use";
+	public static final String PERMISSION_FAKEQUIT_NOTIFY = "cvvanish.fakequit.notify";
+	
+	public static final String PERMISSION_HIDE_USE = "cvvanish.hide.use";
+	public static final String PERMISSION_HIDE_NOTIFY = "cvvanish.hide.notify";
+	
+	public static final String PERMISSION_LEGACYPV_USE = "cvvanish.legacypv.use";
+	
+	public static final String PERMISSION_LEGACYV_USE = "cvvanish.legacyv.use";
+	
+	public static final String PERMISSION_PICKUP_USE = "cvvanish.pickup.use";
+	
+	public static final String PERMISSION_PICKUP_OFF_USE = "cvvanish.pickup.off.use";
+	
+	public static final String PERMISSION_PICKUP_ON_USE = "cvvanish.pickup.on.use";
+	
+	public static final String PERMISSION_SHOW_USE = "cvvanish.show.use";
+	public static final String PERMISSION_SHOW_NOTIFY = "cvvanish.show.notify";
+	
+	public static final String PERMISSION_TABOFF_USE = "cvvanish.taboff.use";
+	public static final String PERMISSION_TABOFF_NOTIFY = "cvvanish.taboff.notify";
+	
+	public static final String PERMISSION_TABON_USE = "cvvanish.tabon.use";
+	public static final String PERMISSION_TABON_NOTIFY = "cvvanish.tabon.notify";
+	
+	public static final String PERMISSION_VISIBILITYOFF_USE = "cvvanish.visibilityoff.use";
+	public static final String PERMISSION_VISIBILITYOFF_NOTIFY = "cvvanish.visibilityoff.notify";
+	
+	public static final String PERMISSION_VISIBILITYON_USE = "cvvanish.visibilityon.use";
+	public static final String PERMISSION_VISIBILITYON_NOTIFY = "cvvanish.visibilityon.notify";
+	
+	public static final String CHANNEL_CVVANISH_BUKKIT_READY = "CVVANISH_BUKKIT_READY";
 	
 	private static final String DEFAULT_STRING = "8SvDtQVF7q1Ycu3j6OsBL1Wcva8daYAO";
 	
-	private static final String HIDDEN_DIRECTORY_NAME = "Hidden";
-	private static final String PICKUP_DIRECTORY_NAME = "Pickup";
+	private static final String HIDDEN_PLAYER_DIRECTORY_NAME = "Hidden-Players";
+	private static final String PICKUP_PLAYER_DIRECTORY_NAME = "Pickup-Players";
 	
 	private static final String HIDDEN_FILE_NAME = "hidden.yml";
 	private static final String PICKUP_FILE_NAME = "pickup.yml";
 	
-	private static final String KEY_STATUS_UNLISTED = "STATUS_UNLISTED";
-	private static final String KEY_STATUS_VANISHED = "STATUS_VANISHED";
-	private static final String KEY_STATUS_HIDDEN = "STATUS_HIDDEN";
+	private static final String VALUE_STATUS_UNLISTED = "STATUS_UNLISTED";
+	private static final String VALUE_STATUS_VANISHED = "STATUS_VANISHED";
+	private static final String VALUE_STATUS_HIDDEN = "STATUS_HIDDEN";
 	
 	private static final String VALUE_PICKUP_VALID = "PICKUP_VALID";
 	
@@ -148,7 +184,7 @@ public final class CVVanish extends Plugin {
 		 * Hidden and Pickup player directory and file setup
 		 */
 		
-		hiddenDirectory = new File(getDataFolder(), HIDDEN_DIRECTORY_NAME);
+		hiddenDirectory = new File(getDataFolder(), HIDDEN_PLAYER_DIRECTORY_NAME);
 		final String hiddenDirectoryPath = hiddenDirectory.getPath();
 		
 		try {
@@ -201,7 +237,7 @@ public final class CVVanish extends Plugin {
 			throw new RuntimeException("SecurityException thrown while checking to see if hidden file exists at " + hiddenFilePath + ", cannot start CVVanish.", e);
 		}
 		
-		pickupDirectory = new File(getDataFolder(), PICKUP_DIRECTORY_NAME);
+		pickupDirectory = new File(getDataFolder(), PICKUP_PLAYER_DIRECTORY_NAME);
 		final String pickupDirectoryPath = pickupDirectory.getPath();
 		
 		try {
@@ -565,17 +601,17 @@ public final class CVVanish extends Plugin {
 	
 	public boolean canJoinSilent(ProxiedPlayer player) {
 		
-		return player.hasPermission(SILENT_JOIN_PERMISSION);
+		return player.hasPermission(PERMISSION_SILENT_JOIN);
 	}
 	
 	public boolean canLeaveSilent(ProxiedPlayer player) {
 		
-		return player.hasPermission(SILENT_LEAVE_PERMISSION);
+		return player.hasPermission(PERMISSION_SILENT_LEAVE);
 	}
 	
 	public boolean canNotifySilent(ProxiedPlayer player) {
 		
-		return player.hasPermission(SILENT_NOTIFY_PERMISSION);
+		return player.hasPermission(PERMISSION_SILENT_NOTIFY);
 	}
 	
 	public HashSet<UUID> getUnlistedPlayerIds() {

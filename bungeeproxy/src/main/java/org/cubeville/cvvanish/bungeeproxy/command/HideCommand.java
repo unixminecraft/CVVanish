@@ -36,16 +36,13 @@ public final class HideCommand extends PlayerCommand {
 	
 	private static final String SYNTAX = "&cSyntax: /hide [fq]&r";
 	
-	private static final String USE_PERMISSION = "cvvanish.hide.use";
-	private static final String NOTIFY_PERMISSION = "cvvanish.hide.notify";
-	
 	private final CVVanish vanishPlugin;
 	
 	private final Logger logger;
 	
 	public HideCommand(final CVVanish vanishPlugin) {
 		
-		super("hide", USE_PERMISSION, convertText(SYNTAX));
+		super("hide", CVVanish.PERMISSION_HIDE_USE, convertText(SYNTAX));
 		
 		addFlag("fq");
 		
@@ -108,7 +105,7 @@ public final class HideCommand extends PlayerCommand {
 		final ProxyServer proxyServer = vanishPlugin.getProxy();
 		for(final ProxiedPlayer onlinePlayer : proxyServer.getPlayers()) {
 			
-			if(onlinePlayer.hasPermission(NOTIFY_PERMISSION)) {
+			if(onlinePlayer.hasPermission(CVVanish.PERMISSION_HIDE_NOTIFY)) {
 				onlinePlayer.sendMessage(vanishNotification, playerNameValue, isNowHidden);
 			}
 		}

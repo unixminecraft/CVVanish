@@ -36,16 +36,13 @@ public final class ShowCommand extends PlayerCommand {
 	
 	private static final String SYNTAX = "&cSyntax: /show [fj]&r";
 	
-	private static final String USE_PERMISSION = "cvvanish.show.use";
-	private static final String NOTIFY_PERMISSION = "cvvanish.show.notify";
-	
 	private final CVVanish vanishPlugin;
 	
 	private final Logger logger;
 	
 	public ShowCommand(final CVVanish vanishPlugin) {
 		
-		super("show", USE_PERMISSION, convertText(SYNTAX));
+		super("show", CVVanish.PERMISSION_SHOW_USE, convertText(SYNTAX));
 		
 		addFlag("fj");
 		
@@ -108,7 +105,7 @@ public final class ShowCommand extends PlayerCommand {
 		final ProxyServer proxyServer = vanishPlugin.getProxy();
 		for(final ProxiedPlayer onlinePlayer : proxyServer.getPlayers()) {
 			
-			if(onlinePlayer.hasPermission(NOTIFY_PERMISSION)) {
+			if(onlinePlayer.hasPermission(CVVanish.PERMISSION_SHOW_NOTIFY)) {
 				onlinePlayer.sendMessage(vanishNotification, playerNameValue, isNowFullyVisible);
 			}
 		}

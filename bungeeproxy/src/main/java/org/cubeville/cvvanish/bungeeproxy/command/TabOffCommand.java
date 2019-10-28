@@ -36,16 +36,13 @@ public final class TabOffCommand extends PlayerCommand {
 	
 	private static final String SYNTAX = "&cSyntax: /toff&r";
 	
-	private static final String USE_PERMISSION = "cvvanish.taboff.use";
-	private static final String NOTIFY_PERMISSION = "cvvanish.taboff.notify";
-	
 	private final CVVanish vanishPlugin;
 	
 	private final Logger logger;
 	
 	public TabOffCommand(final CVVanish vanishPlugin) {
 		
-		super("toff", USE_PERMISSION, convertText(SYNTAX));
+		super("toff", CVVanish.PERMISSION_TABOFF_USE, convertText(SYNTAX));
 		
 		this.vanishPlugin = vanishPlugin;
 		
@@ -120,7 +117,7 @@ public final class TabOffCommand extends PlayerCommand {
 			
 			for(final ProxiedPlayer onlinePlayer : proxy.getPlayers()) {
 				
-				if(onlinePlayer.hasPermission(NOTIFY_PERMISSION)) {
+				if(onlinePlayer.hasPermission(CVVanish.PERMISSION_TABOFF_NOTIFY)) {
 					onlinePlayer.sendMessage(vanishNotification, playerNameValue, isNow, hiddenStatusValue, period);
 				}
 			}
@@ -137,7 +134,7 @@ public final class TabOffCommand extends PlayerCommand {
 			
 			for(final ProxiedPlayer onlinePlayer : proxy.getPlayers()) {
 				
-				if(onlinePlayer.hasPermission(NOTIFY_PERMISSION)) {
+				if(onlinePlayer.hasPermission(CVVanish.PERMISSION_TABOFF_NOTIFY)) {
 					onlinePlayer.sendMessage(vanishNotification, playerNameValue, isNow, hiddenStatusValue, period);
 				}
 			}

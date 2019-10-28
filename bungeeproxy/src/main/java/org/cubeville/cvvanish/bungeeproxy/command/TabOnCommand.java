@@ -36,16 +36,13 @@ public final class TabOnCommand extends PlayerCommand {
 	
 	private static final String SYNTAX = "&cSyntax: /ton&r";
 	
-	private static final String USE_PERMISSION = "cvvanish.tabon.use";
-	private static final String NOTIFY_PERMISSION = "cvvanish.tabon.notify";
-	
 	private final CVVanish vanishPlugin;
 	
 	private final Logger logger;
 	
 	public TabOnCommand(final CVVanish vanishPlugin) {
 		
-		super("ton", USE_PERMISSION, convertText(SYNTAX));
+		super("ton", CVVanish.PERMISSION_TABON_USE, convertText(SYNTAX));
 		
 		this.vanishPlugin = vanishPlugin;
 		
@@ -120,7 +117,7 @@ public final class TabOnCommand extends PlayerCommand {
 			
 			for(final ProxiedPlayer onlinePlayer : proxy.getPlayers()) {
 				
-				if(onlinePlayer.hasPermission(NOTIFY_PERMISSION)) {
+				if(onlinePlayer.hasPermission(CVVanish.PERMISSION_TABON_NOTIFY)) {
 					onlinePlayer.sendMessage(vanishNotification, playerNameValue, isNow, hiddenStatusValue, period);
 				}
 			}
@@ -137,7 +134,7 @@ public final class TabOnCommand extends PlayerCommand {
 			
 			for(final ProxiedPlayer onlinePlayer : proxy.getPlayers()) {
 				
-				if(onlinePlayer.hasPermission(NOTIFY_PERMISSION)) {
+				if(onlinePlayer.hasPermission(CVVanish.PERMISSION_TABON_NOTIFY)) {
 					onlinePlayer.sendMessage(vanishNotification, playerNameValue, isNow, hiddenStatusValue, period);
 				}
 			}

@@ -3,10 +3,10 @@
   <modelVersion>4.0.0</modelVersion>
   
   <groupId>org.cubeville.cvvanish.bungeeproxy</groupId>
-  <artifactId>CVVanish</artifactId>
+  <artifactId>CVVanish-BungeeProxy</artifactId>
   <packaging>jar</packaging>
   <version>2.0</version>
-  <name>CVVanish</name>
+  <name>CVVanish-BungeeProxy</name>
   
   <url>http://maven.apache.org</url>
   
@@ -23,13 +23,13 @@
     </dependency>
     <dependency>
       <groupId>org.cubeville.cvtools.bungeecord</groupId>
-      <artifactId>CVTools</artifactId>
+      <artifactId>CVTools-BungeeCord</artifactId>
       <version>2.0</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.cubeville.cvipc.bungeeproxy</groupId>
-      <artifactId>CVIPC</artifactId>
+      <artifactId>CVIPC-BungeeProxy</artifactId>
       <version>2.0</version>
       <scope>compile</scope>
     </dependency>

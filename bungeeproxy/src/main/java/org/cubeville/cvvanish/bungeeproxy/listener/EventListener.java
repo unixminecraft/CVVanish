@@ -29,8 +29,6 @@ import net.md_5.bungee.event.EventPriority;
 
 public final class EventListener implements Listener {
 	
-	private static final String INVISIBLE_JOIN_PERMISSION = "cvvanish.invisible.join";
-	
 	private final CVVanish vanishPlugin;
 	
 	private final ProxyServer proxyServer;
@@ -47,7 +45,7 @@ public final class EventListener implements Listener {
 		
 		final ProxiedPlayer player = event.getPlayer();
 		
-		if(player.hasPermission(INVISIBLE_JOIN_PERMISSION)) {
+		if(player.hasPermission(CVVanish.PERMISSION_HIDDEN_JOIN)) {
 			
 			vanishPlugin.hide(player.getUniqueId());
 		}
@@ -58,7 +56,7 @@ public final class EventListener implements Listener {
 		
 		final ProxiedPlayer player = event.getPlayer();
 		
-		if(player.hasPermission(INVISIBLE_JOIN_PERMISSION)) {
+		if(player.hasPermission(CVVanish.PERMISSION_HIDDEN_JOIN)) {
 			
 			vanishPlugin.hide(player.getUniqueId());
 		}

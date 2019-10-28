@@ -33,15 +33,13 @@ public final class PickupOnCommand extends SubPlayerCommand {
 	
 	private static final String SYNTAX = "&cSyntax: /vpickup on&r";
 	
-	private static final String USE_PERMISSION = "cvvanish.pickup.on.use";
-	
 	private final CVVanish vanishPlugin;
 	
 	private final Logger logger;
 	
 	public PickupOnCommand(CVVanish vanishPlugin) {
 		
-		super("on", USE_PERMISSION, getNoPermission(), convertText(SYNTAX));
+		super("on", CVVanish.PERMISSION_PICKUP_ON_USE, convertText(SYNTAX));
 		
 		this.vanishPlugin = vanishPlugin;
 		

@@ -3,10 +3,10 @@
   <modelVersion>4.0.0</modelVersion>
   
   <groupId>org.cubeville.cvvanish.bungeebukkit</groupId>
-  <artifactId>CVVanish</artifactId>
+  <artifactId>CVVanish-BungeeBukkit</artifactId>
   <packaging>jar</packaging>
   <version>2.0</version>
-  <name>CVVanish</name>
+  <name>CVVanish-BungeeBukkit</name>
   
   <url>http://maven.apache.org</url>
   
@@ -23,7 +23,7 @@
     </dependency>
     <dependency>
       <groupId>org.cubeville.cvipc.bungeebukkit</groupId>
-      <artifactId>CVIPC</artifactId>
+      <artifactId>CVIPC-BungeeBukkit</artifactId>
       <version>2.0</version>
       <scope>compile</scope>
     </dependency>
