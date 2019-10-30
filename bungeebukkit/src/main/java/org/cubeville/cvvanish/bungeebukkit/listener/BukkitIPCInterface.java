@@ -45,6 +45,8 @@ public final class BukkitIPCInterface implements IPCInterface {
 		
 		if(channel.equals(CVVanish.CHANNEL_VANISH_INITIALIZE)) {
 			
+			vanishPlugin.cancelInitializeTask();
+			
 			for(final String message : messages) {
 				
 				try {

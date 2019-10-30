@@ -24,6 +24,8 @@ public final class VanishInitializer implements Runnable {
 	private final CVVanish vanishPlugin;
 	private final CVIPC ipcPlugin;
 	
+	private int initializeTaskNumber;
+	
 	public VanishInitializer(final CVVanish vanishPlugin, final CVIPC ipcPlugin) {
 		
 		this.vanishPlugin = vanishPlugin;
@@ -32,26 +34,14 @@ public final class VanishInitializer implements Runnable {
 	
 	public void start() {
 		
-		vanishPlugin.getServer().getScheduler().scheduleSyncDelayedTask(vanishPlugin, this);
+		initializeTaskNumber = vanishPlugin.getServer().getScheduler().scheduleSyncRepeatingTask(vanishPlugin, this, 0L, 20L * 2L);
 	}
 	
 	@Override
 	public void run() {
 		
-		while(!ipcPlugin.isClientReady()) {
-			try {
-				Thread.sleep(1);
-			}
-			catch(InterruptedException e) {
-				// Do nothing.
-			}
-		}
-		
-		try {
-			Thread.sleep(1);
-		}
-		catch(InterruptedException e) {
-			// Do nothing.
+		if(!ipcPlugin.isClientReady()) {
+			return;
 		}
 		
 		final IPCMessage ipcMessage = new IPCMessage("CVVANISH_BUKKIT_READY");
@@ -59,5 +49,10 @@ public final class VanishInitializer implements Runnable {
 		ipcMessage.addMessage("cvvanish_bukkit_ready");
 		
 		ipcPlugin.sendIPCMessage(ipcMessage);
+	}
+	
+	public void stop() {
+		
+		vanishPlugin.getServer().getScheduler().cancelTask(initializeTaskNumber);
 	}
 }

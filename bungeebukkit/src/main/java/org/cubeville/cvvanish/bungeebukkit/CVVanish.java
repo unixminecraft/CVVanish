@@ -56,6 +56,7 @@ public class CVVanish extends JavaPlugin {
 	private CVIPC ipcPlugin;
 	
 	private NightVisionEffectIssuer nightVisionEffectIssuer;
+	private VanishInitializer vanishInitializer;
 	
 	@Override
 	public void onEnable() {
@@ -126,7 +127,7 @@ public class CVVanish extends JavaPlugin {
 		nightVisionEffectIssuer = new NightVisionEffectIssuer(this);
 		nightVisionEffectIssuer.start();
 		
-		VanishInitializer vanishInitializer = new VanishInitializer(this, ipcPlugin);
+		vanishInitializer = new VanishInitializer(this, ipcPlugin);
 		vanishInitializer.start();
 	}
 	
@@ -142,6 +143,11 @@ public class CVVanish extends JavaPlugin {
 		ipcPlugin.deregisterIPCInterface(CHANNEL_PICKUP_INITIALIZE);
 		ipcPlugin.deregisterIPCInterface(CHANNEL_VANISH_ENABLE);
 		ipcPlugin.deregisterIPCInterface(CHANNEL_VANISH_INITIALIZE);
+	}
+	
+	public void cancelInitializeTask() {
+		
+		vanishInitializer.stop();
 	}
 	
 	public boolean disappear(UUID playerId) {
