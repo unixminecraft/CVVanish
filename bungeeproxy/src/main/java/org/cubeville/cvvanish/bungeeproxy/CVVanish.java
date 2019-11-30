@@ -42,12 +42,19 @@ import org.cubeville.cvvanish.bungeeproxy.command.VisibilityOffCommand;
 import org.cubeville.cvvanish.bungeeproxy.command.VisibilityOnCommand;
 import org.cubeville.cvvanish.bungeeproxy.command.pickup.PickupOffCommand;
 import org.cubeville.cvvanish.bungeeproxy.command.pickup.PickupOnCommand;
+import org.cubeville.cvvanish.bungeeproxy.event.HidePlayerEvent;
+import org.cubeville.cvvanish.bungeeproxy.event.RelistPlayerEvent;
+import org.cubeville.cvvanish.bungeeproxy.event.ShowPlayerEvent;
+import org.cubeville.cvvanish.bungeeproxy.event.UnlistPlayerEvent;
+import org.cubeville.cvvanish.bungeeproxy.event.UnvanishPlayerEvent;
+import org.cubeville.cvvanish.bungeeproxy.event.VanishPlayerEvent;
 import org.cubeville.cvvanish.bungeeproxy.listener.EventListener;
 import org.cubeville.cvvanish.bungeeproxy.listener.ProxyIPCInterface;
 import org.cubeville.cvvanish.bungeeproxy.thread.HiddenNotifier;
 import org.cubeville.cvvanish.bungeeproxy.thread.UnlistedNotifier;
 import org.cubeville.cvvanish.bungeeproxy.thread.VanishedNotifier;
 
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
@@ -158,6 +165,9 @@ public final class CVVanish extends Plugin {
 	
 	private ConcurrentHashMap<UUID, HiddenStatus> playerIdToHiddenStatus;
 	private HashSet<UUID> pickupPlayerIds;
+	
+	private ProxyServer proxy;
+	private PluginManager pluginManager;
 	
 	private CVIPC ipcPlugin;
 	
@@ -441,10 +451,16 @@ public final class CVVanish extends Plugin {
 		}
 		
 		/*
+		 * Proxy setup
+		 */
+		
+		proxy = getProxy();
+		
+		/*
 		 * PluginManager setup
 		 */
 		
-		final PluginManager pluginManager = getProxy().getPluginManager();
+		pluginManager = proxy.getPluginManager();
 		
 		/*
 		 * Dependency plugin setup
@@ -689,11 +705,23 @@ public final class CVVanish extends Plugin {
 		else if(isVanished(playerId)) {
 			
 			playerIdToHiddenStatus.put(playerId, HiddenStatus.HIDDEN);
+			
+			final ProxiedPlayer player = proxy.getPlayer(playerId);
+			if(player != null) {
+				pluginManager.callEvent(new UnlistPlayerEvent(player));
+			}
+			
 			return true;
 		}
 		else {
 			
 			playerIdToHiddenStatus.put(playerId, HiddenStatus.UNLISTED);
+			
+			final ProxiedPlayer player = proxy.getPlayer(playerId);
+			if(player != null) {
+				pluginManager.callEvent(new UnlistPlayerEvent(player));
+			}
+			
 			return true;
 		}
 	}
@@ -716,11 +744,23 @@ public final class CVVanish extends Plugin {
 		else if(isHidden(playerId)) {
 			
 			playerIdToHiddenStatus.put(playerId, HiddenStatus.VANISHED);
+			
+			final ProxiedPlayer player = proxy.getPlayer(playerId);
+			if(player != null) {
+				pluginManager.callEvent(new RelistPlayerEvent(player));
+			}
+			
 			return true;
 		}
 		else {
 			
 			playerIdToHiddenStatus.remove(playerId);
+			
+			final ProxiedPlayer player = proxy.getPlayer(playerId);
+			if(player != null) {
+				pluginManager.callEvent(new RelistPlayerEvent(player));
+			}
+			
 			return true;
 		}
 	}
@@ -749,10 +789,13 @@ public final class CVVanish extends Plugin {
 			
 			playerIdToHiddenStatus.put(playerId, HiddenStatus.HIDDEN);
 			
+			final ProxiedPlayer player = proxy.getPlayer(playerId);
+			if(player != null) {
+				pluginManager.callEvent(new VanishPlayerEvent(player));
+			}
+			
 			final IPCMessage ipcMessage = new IPCMessage(IPCMessage.CHANNEL_BROADCAST, "VANISH_ENABLE");
-			
 			ipcMessage.addMessage(playerId.toString());
-			
 			ipcPlugin.broadcastIPCMessage(ipcMessage);
 			
 			return true;
@@ -761,10 +804,13 @@ public final class CVVanish extends Plugin {
 			
 			playerIdToHiddenStatus.put(playerId, HiddenStatus.VANISHED);
 			
+			final ProxiedPlayer player = proxy.getPlayer(playerId);
+			if(player != null) {
+				pluginManager.callEvent(new VanishPlayerEvent(player));
+			}
+			
 			final IPCMessage ipcMessage = new IPCMessage(IPCMessage.CHANNEL_BROADCAST, "VANISH_ENABLE");
-			
 			ipcMessage.addMessage(playerId.toString());
-			
 			ipcPlugin.broadcastIPCMessage(ipcMessage);
 			
 			return true;
@@ -790,10 +836,13 @@ public final class CVVanish extends Plugin {
 			
 			playerIdToHiddenStatus.put(playerId, HiddenStatus.UNLISTED);
 			
+			final ProxiedPlayer player = proxy.getPlayer(playerId);
+			if(player != null) {
+				pluginManager.callEvent(new UnvanishPlayerEvent(player));
+			}
+			
 			final IPCMessage ipcMessage = new IPCMessage(IPCMessage.CHANNEL_BROADCAST, "VANISH_DISABLE");
-			
 			ipcMessage.addMessage(playerId.toString());
-			
 			ipcPlugin.broadcastIPCMessage(ipcMessage);
 			
 			return true;
@@ -802,10 +851,13 @@ public final class CVVanish extends Plugin {
 			
 			playerIdToHiddenStatus.remove(playerId);
 			
+			final ProxiedPlayer player = proxy.getPlayer(playerId);
+			if(player != null) {
+				pluginManager.callEvent(new UnvanishPlayerEvent(player));
+			}
+			
 			final IPCMessage ipcMessage = new IPCMessage(IPCMessage.CHANNEL_BROADCAST, "VANISH_DISABLE");
-			
 			ipcMessage.addMessage(playerId.toString());
-			
 			ipcPlugin.broadcastIPCMessage(ipcMessage);
 			
 			return true;
@@ -831,10 +883,13 @@ public final class CVVanish extends Plugin {
 		
 		playerIdToHiddenStatus.put(playerId, HiddenStatus.HIDDEN);
 		
+		final ProxiedPlayer player = proxy.getPlayer(playerId);
+		if(player != null) {
+			pluginManager.callEvent(new HidePlayerEvent(player));
+		}
+		
 		final IPCMessage ipcMessage = new IPCMessage(IPCMessage.CHANNEL_BROADCAST, "VANISH_ENABLE");
-		
 		ipcMessage.addMessage(playerId.toString());
-		
 		ipcPlugin.broadcastIPCMessage(ipcMessage);
 		
 		return true;
@@ -854,10 +909,13 @@ public final class CVVanish extends Plugin {
 		
 		playerIdToHiddenStatus.remove(playerId);
 		
+		final ProxiedPlayer player = proxy.getPlayer(playerId);
+		if(player != null) {
+			pluginManager.callEvent(new ShowPlayerEvent(player));
+		}
+		
 		final IPCMessage ipcMessage = new IPCMessage(IPCMessage.CHANNEL_BROADCAST, "VANISH_DISABLE");
-		
 		ipcMessage.addMessage(playerId.toString());
-		
 		ipcPlugin.broadcastIPCMessage(ipcMessage);
 		
 		return true;
@@ -883,9 +941,7 @@ public final class CVVanish extends Plugin {
 		pickupPlayerIds.add(playerId);
 		
 		final IPCMessage ipcMessage = new IPCMessage(IPCMessage.CHANNEL_BROADCAST, "PICKUP_ENABLE");
-		
 		ipcMessage.addMessage(playerId.toString());
-		
 		ipcPlugin.broadcastIPCMessage(ipcMessage);
 		
 		return true;
@@ -906,9 +962,7 @@ public final class CVVanish extends Plugin {
 		pickupPlayerIds.remove(playerId);
 		
 		final IPCMessage ipcMessage = new IPCMessage(IPCMessage.CHANNEL_BROADCAST, "PICKUP_DISABLE");
-		
 		ipcMessage.addMessage(playerId.toString());
-		
 		ipcPlugin.broadcastIPCMessage(ipcMessage);
 		
 		return true;
