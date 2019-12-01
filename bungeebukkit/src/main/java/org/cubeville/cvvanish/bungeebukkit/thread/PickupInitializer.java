@@ -22,7 +22,7 @@ import org.cubeville.cvipc.bungeebukkit.CVIPC;
 import org.cubeville.cvipc.bungeebukkit.IPCMessage;
 import org.cubeville.cvvanish.bungeebukkit.CVVanish;
 
-public final class VanishInitializer implements Runnable {
+public final class PickupInitializer implements Runnable {
 	
 	private final CVVanish vanishPlugin;
 	private final CVIPC ipcPlugin;
@@ -31,7 +31,7 @@ public final class VanishInitializer implements Runnable {
 	
 	private int initializeTaskNumber;
 	
-	public VanishInitializer(final CVVanish vanishPlugin, final CVIPC ipcPlugin) {
+	public PickupInitializer(final CVVanish vanishPlugin, final CVIPC ipcPlugin) {
 		
 		this.vanishPlugin = vanishPlugin;
 		this.ipcPlugin = ipcPlugin;
@@ -41,7 +41,7 @@ public final class VanishInitializer implements Runnable {
 	
 	public void start() {
 		
-		logger.log(Level.INFO, "Starting vanish initialization requests to the proxy.");
+		logger.log(Level.INFO, "Starting pickup initialization requests to the proxy.");
 		
 		initializeTaskNumber = vanishPlugin.getServer().getScheduler().scheduleSyncRepeatingTask(vanishPlugin, this, 0L, 20L * 2L);
 	}
@@ -51,20 +51,20 @@ public final class VanishInitializer implements Runnable {
 		
 		if(!ipcPlugin.isClientReady()) {
 			
-			logger.log(Level.INFO, "IPCClient is not ready, will try vanish initialization again.");
+			logger.log(Level.INFO, "IPCClient is not ready, will try pickup initialization again.");
 			return;
 		}
 		
-		logger.log(Level.INFO, "IPCClient is ready, requesting vanish initialization.");
+		logger.log(Level.INFO, "IPCClient is ready, requesting pickup initialization.");
 		
-		final IPCMessage ipcMessage = new IPCMessage("CVVANISH_VANISH_BUKKIT_READY");
-		ipcMessage.addMessage("cvvanish_vanish_bukkit_ready");
+		final IPCMessage ipcMessage = new IPCMessage("CVVANISH_PICKUP_BUKKIT_READY");
+		ipcMessage.addMessage("cvvanish_pickup_bukkit_ready");
 		ipcPlugin.sendIPCMessage(ipcMessage);
 	}
 	
 	public void stop() {
 		
-		logger.log(Level.INFO, "Cancelling vanish initialization requests.");
+		logger.log(Level.INFO, "Cancelling pickup initialization requests.");
 		
 		vanishPlugin.getServer().getScheduler().cancelTask(initializeTaskNumber);
 	}

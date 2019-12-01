@@ -32,6 +32,7 @@ import org.cubeville.cvipc.bungeebukkit.listener.IPCInterface;
 import org.cubeville.cvvanish.bungeebukkit.listener.EventListener;
 import org.cubeville.cvvanish.bungeebukkit.listener.BukkitIPCInterface;
 import org.cubeville.cvvanish.bungeebukkit.thread.NightVisionEffectIssuer;
+import org.cubeville.cvvanish.bungeebukkit.thread.PickupInitializer;
 import org.cubeville.cvvanish.bungeebukkit.thread.VanishInitializer;
 
 public class CVVanish extends JavaPlugin {
@@ -57,6 +58,7 @@ public class CVVanish extends JavaPlugin {
 	
 	private NightVisionEffectIssuer nightVisionEffectIssuer;
 	private VanishInitializer vanishInitializer;
+	private PickupInitializer pickupInitializer;
 	
 	@Override
 	public void onEnable() {
@@ -129,6 +131,9 @@ public class CVVanish extends JavaPlugin {
 		
 		vanishInitializer = new VanishInitializer(this, ipcPlugin);
 		vanishInitializer.start();
+		
+		pickupInitializer = new PickupInitializer(this, ipcPlugin);
+		pickupInitializer.start();
 	}
 	
 	@Override
@@ -145,9 +150,14 @@ public class CVVanish extends JavaPlugin {
 		ipcPlugin.deregisterIPCInterface(CHANNEL_VANISH_INITIALIZE);
 	}
 	
-	public void cancelInitializeTask() {
+	public void cancelVanishInitializeTask() {
 		
 		vanishInitializer.stop();
+	}
+	
+	public void cancelPickupInitializeTask() {
+		
+		pickupInitializer.stop();
 	}
 	
 	public boolean disappear(UUID playerId) {

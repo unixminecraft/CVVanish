@@ -45,7 +45,12 @@ public final class BukkitIPCInterface implements IPCInterface {
 		
 		if(channel.equals(CVVanish.CHANNEL_VANISH_INITIALIZE)) {
 			
-			vanishPlugin.cancelInitializeTask();
+			logger.log(Level.INFO, "Vanish initialization response received.");
+			logger.log(Level.INFO, "Attempting to cancel vanish initialization requests.");
+			
+			vanishPlugin.cancelVanishInitializeTask();
+			
+			logger.log(Level.INFO, "Number of vanish entries received: " + String.valueOf(messages.size()));
 			
 			for(final String message : messages) {
 				
@@ -58,8 +63,13 @@ public final class BukkitIPCInterface implements IPCInterface {
 					continue;
 				}
 				
+				logger.log(Level.INFO, "Valid vanish entry found.");
+				logger.log(Level.INFO, "UUID: " + message);
+				
 				vanishPlugin.enableVanish(UUID.fromString(message));
 			}
+			
+			logger.log(Level.INFO, "Vanish initialization complete.");
 		}
 		else if(channel.equals(CVVanish.CHANNEL_VANISH_ENABLE)) {
 			
@@ -108,6 +118,13 @@ public final class BukkitIPCInterface implements IPCInterface {
 		}
 		else if(channel.equals(CVVanish.CHANNEL_PICKUP_INITIALIZE)) {
 			
+			logger.log(Level.INFO, "Pickup initialization response received.");
+			logger.log(Level.INFO, "Attempting to cancel pickup initialization requests.");
+			
+			vanishPlugin.cancelPickupInitializeTask();
+			
+			logger.log(Level.INFO, "Number of pickup entries received: " + String.valueOf(messages.size()));
+			
 			for(final String message : messages) {
 				
 				try {
@@ -119,8 +136,13 @@ public final class BukkitIPCInterface implements IPCInterface {
 					continue;
 				}
 				
+				logger.log(Level.INFO, "Valid pickup entry found.");
+				logger.log(Level.INFO, "UUID: " + message);
+				
 				vanishPlugin.enablePickup(UUID.fromString(message));
 			}
+			
+			logger.log(Level.INFO, "Pickup initialization complete.");
 		}
 		else if(channel.equals(CVVanish.CHANNEL_PICKUP_ENABLE)) {
 			
