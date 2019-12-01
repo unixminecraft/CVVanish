@@ -39,7 +39,7 @@ public final class ProxyIPCInterface implements IPCInterface {
 		
 		final String channel = ipcMessage.getChannel();
 		
-		if(channel.equals(CVVanish.CHANNEL_CVVANISH_BUKKIT_READY)) {
+		if(channel.equals(CVVanish.CHANNEL_CVVANISH_VANISH_BUKKIT_READY)) {
 			
 			final String serverName = ipcMessage.getServerName();
 			final List<String> messages = ipcMessage.getMessages();
@@ -52,15 +52,46 @@ public final class ProxyIPCInterface implements IPCInterface {
 				return;
 			}
 			
-			if(!messages.get(0).equals("cvvanish_bukkit_ready")) {
+			if(!messages.get(0).equals("cvvanish_vanish_bukkit_ready")) {
 				
 				logger.log(Level.INFO, "Bukkit server vanish initialization for server " + serverName + " does not have the correct data.");
-				logger.log(Level.INFO, "The single message should be \"cvvanish_bukkit_ready\".");
+				logger.log(Level.INFO, "The single message should be \"cvvanish_vanish_bukkit_ready\".");
 				logger.log(Level.INFO, "IPCMessage data: " + ipcMessage.toString());
 				return;
 			}
 			
-			vanishPlugin.initializeServer(serverName);
+			logger.log(Level.INFO, "Request from Bukkit server to initialize vanished players.");
+			logger.log(Level.INFO, "Server Name: " + serverName);
+			logger.log(Level.INFO, "Attempting to initialize server.");
+			
+			vanishPlugin.initializeVanishServer(serverName);
+		}
+		else if(channel.equals(CVVanish.CHANNEL_CVVANISH_PICKUP_BUKKIT_READY)) {
+			
+			final String serverName = ipcMessage.getServerName();
+			final List<String> messages = ipcMessage.getMessages();
+			
+			if(messages.size() != 1) {
+				
+				logger.log(Level.INFO, "Bukkit server pickup initialization for server " + serverName + " does not have the correct amount of data.");
+				logger.log(Level.INFO, "The number of messages should be 1, it is currently " + String.valueOf(messages.size()) + ".");
+				logger.log(Level.INFO, "IPCMessage data: " + ipcMessage.toString());
+				return;
+			}
+			
+			if(!messages.get(0).equals("cvvanish_pickup_bukkit_ready")) {
+				
+				logger.log(Level.INFO, "Bukkit server pickup initialization for server " + serverName + " does not have the correct data.");
+				logger.log(Level.INFO, "The single message should be \"cvvanish_pickup_bukkit_ready\".");
+				logger.log(Level.INFO, "IPCMessage data: " + ipcMessage.toString());
+				return;
+			}
+			
+			logger.log(Level.INFO, "Request from Bukkit server to initialize picup players.");
+			logger.log(Level.INFO, "Server Name: " + serverName);
+			logger.log(Level.INFO, "Attempting to initialize server.");
+			
+			vanishPlugin.initializePickupServer(serverName);
 		}
 		else {
 			

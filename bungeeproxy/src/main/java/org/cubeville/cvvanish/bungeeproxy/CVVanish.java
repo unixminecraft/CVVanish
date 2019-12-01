@@ -137,7 +137,8 @@ public final class CVVanish extends Plugin {
 	public static final String PERMISSION_VISIBILITYON_USE = "cvvanish.visibilityon.use";
 	public static final String PERMISSION_VISIBILITYON_NOTIFY = "cvvanish.visibilityon.notify";
 	
-	public static final String CHANNEL_CVVANISH_BUKKIT_READY = "CVVANISH_BUKKIT_READY";
+	public static final String CHANNEL_CVVANISH_VANISH_BUKKIT_READY = "CVVANISH_VANISH_BUKKIT_READY";
+	public static final String CHANNEL_CVVANISH_PICKUP_BUKKIT_READY = "CVVANISH_PICKUP_BUKKIT_READY";
 	
 	private static final String DEFAULT_STRING = "8SvDtQVF7q1Ycu3j6OsBL1Wcva8daYAO";
 	
@@ -532,7 +533,8 @@ public final class CVVanish extends Plugin {
 		
 		final IPCInterface proxyIPCInterface = new ProxyIPCInterface(this);
 		
-		ipcPlugin.registerIPCInterface(CHANNEL_CVVANISH_BUKKIT_READY, proxyIPCInterface);
+		ipcPlugin.registerIPCInterface(CHANNEL_CVVANISH_VANISH_BUKKIT_READY, proxyIPCInterface);
+		ipcPlugin.registerIPCInterface(CHANNEL_CVVANISH_PICKUP_BUKKIT_READY, proxyIPCInterface);
 		
 		/*
 		 * Listener setup
@@ -560,7 +562,8 @@ public final class CVVanish extends Plugin {
 		unlistedNotifier.stop();
 		hiddenNotifier.stop();
 		
-		ipcPlugin.deregisterIPCInterface("CHANNEL_CVVANISH_BUKKIT_READY");
+		ipcPlugin.deregisterIPCInterface(CHANNEL_CVVANISH_VANISH_BUKKIT_READY);
+		ipcPlugin.deregisterIPCInterface(CHANNEL_CVVANISH_PICKUP_BUKKIT_READY);
 		
 		final Configuration hiddenConfiguration = new Configuration();
 		final Configuration pickupConfiguration = new Configuration();
@@ -594,25 +597,34 @@ public final class CVVanish extends Plugin {
 		}
 	}
 	
-	public void initializeServer(final String serverName) {
+	public void initializeVanishServer(final String serverName) {
 		
-		final IPCMessage vanishIPCMessage = new IPCMessage(serverName, "VANISH_INITIALIZE");
-		final IPCMessage pickupIPCMessage = new IPCMessage(serverName, "PICKUP_INITIALIZE");
+		final IPCMessage vanishResponse = new IPCMessage(serverName, "VANISH_INITIALIZE");
 		
 		for(final UUID playerId : playerIdToHiddenStatus.keySet()) {
-			
 			if(isHidden(playerId) || isVanished(playerId)) {
-				vanishIPCMessage.addMessage(playerId.toString());
+				vanishResponse.addMessage(playerId.toString());
 			}
 		}
 		
+		logger.log(Level.INFO, "Vanish initialization message send to server: " + serverName);
+		logger.log(Level.INFO, "Number of entries: " + String.valueOf(vanishResponse.getMessages().size()));
+		
+		ipcPlugin.sendIPCMessage(vanishResponse);
+	}
+	
+	public void initializePickupServer(final String serverName) {
+		
+		final IPCMessage pickupResponse = new IPCMessage(serverName, "PICKUP_INITIALIZE");
+		
 		for(final UUID playerId : pickupPlayerIds) {
-			
-			pickupIPCMessage.addMessage(playerId.toString());
+			pickupResponse.addMessage(playerId.toString());
 		}
 		
-		ipcPlugin.sendIPCMessage(vanishIPCMessage);
-		ipcPlugin.sendIPCMessage(pickupIPCMessage);
+		logger.log(Level.INFO, "Pickup initialization message send to server: " + serverName);
+		logger.log(Level.INFO, "Number of entries: " + String.valueOf(pickupResponse.getMessages().size()));
+		
+		ipcPlugin.sendIPCMessage(pickupResponse);
 	}
 	
 	public boolean canJoinSilent(ProxiedPlayer player) {
