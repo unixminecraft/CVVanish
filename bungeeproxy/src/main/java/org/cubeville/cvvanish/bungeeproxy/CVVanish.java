@@ -142,8 +142,8 @@ public final class CVVanish extends Plugin {
 	
 	private static final String DEFAULT_STRING = "8SvDtQVF7q1Ycu3j6OsBL1Wcva8daYAO";
 	
-	private static final String HIDDEN_PLAYER_DIRECTORY_NAME = "Hidden-Players";
-	private static final String PICKUP_PLAYER_DIRECTORY_NAME = "Pickup-Players";
+	private static final String HIDDEN_PLAYER_DIRECTORY_NAME = "CVVanish-Hidden_Players";
+	private static final String PICKUP_PLAYER_DIRECTORY_NAME = "CVVanish-Pickup_Players";
 	
 	private static final String HIDDEN_FILE_NAME = "hidden.yml";
 	private static final String PICKUP_FILE_NAME = "pickup.yml";
